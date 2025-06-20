@@ -1,14 +1,19 @@
 
 import React, { useState } from 'react';
-import { Monitor, Search, Settings, Users, ArrowRight } from 'lucide-react';
+import { Monitor, Search, Settings, Users, ArrowRight, FileText } from 'lucide-react';
+import { EquipmentForm } from './EquipmentForm';
+import { ReportModal } from './ReportModal';
 
 interface Equipment {
   id: string;
-  type: string;
-  brand: string;
-  model: string;
-  serialNumber: string;
-  patrimony: string;
+  filial: string;
+  nomeMaquina: string;
+  macAddress: string;
+  processadorCPU: string;
+  memoriaRAM: string;
+  armazenamento: string;
+  isCaixa: boolean;
+  pdc?: string;
   status: 'Ativo' | 'Em Manutenção' | 'Desativado' | 'Em Estoque';
   location: string;
   assignedUser?: string;
@@ -18,11 +23,13 @@ interface Equipment {
 const mockEquipments: Equipment[] = [
   {
     id: '1',
-    type: 'Notebook',
-    brand: 'Dell',
-    model: 'Latitude 5520',
-    serialNumber: 'DL123456',
-    patrimony: 'PAT001',
+    filial: 'MB001',
+    nomeMaquina: 'Desktop-001',
+    macAddress: '00:11:22:33:44:55',
+    processadorCPU: 'Intel Core i5-12400',
+    memoriaRAM: '8GB DDR4',
+    armazenamento: 'SSD 256GB',
+    isCaixa: false,
     status: 'Ativo',
     location: 'TI',
     assignedUser: 'João Silva',
@@ -30,23 +37,28 @@ const mockEquipments: Equipment[] = [
   },
   {
     id: '2',
-    type: 'Desktop',
-    brand: 'Lenovo',
-    model: 'ThinkCentre M720',
-    serialNumber: 'LN789012',
-    patrimony: 'PAT002',
+    filial: 'MB001',
+    nomeMaquina: 'Caixa-001',
+    macAddress: '00:11:22:33:44:66',
+    processadorCPU: 'Intel Core i3-10100',
+    memoriaRAM: '4GB DDR4',
+    armazenamento: 'SSD 128GB',
+    isCaixa: true,
+    pdc: 'PDC Principal - Configuração especial para vendas',
     status: 'Ativo',
-    location: 'Financeiro',
+    location: 'Vendas',
     assignedUser: 'Maria Santos',
     acquisitionDate: '2023-02-20'
   },
   {
     id: '3',
-    type: 'Impressora',
-    brand: 'HP',
-    model: 'LaserJet Pro 404dn',
-    serialNumber: 'HP345678',
-    patrimony: 'PAT003',
+    filial: 'MB002',
+    nomeMaquina: 'Desktop-002',
+    macAddress: '00:11:22:33:44:77',
+    processadorCPU: 'AMD Ryzen 5 5600G',
+    memoriaRAM: '16GB DDR4',
+    armazenamento: 'SSD 512GB',
+    isCaixa: false,
     status: 'Em Manutenção',
     location: 'Administrativo',
     acquisitionDate: '2023-03-10'
@@ -54,13 +66,18 @@ const mockEquipments: Equipment[] = [
 ];
 
 export const Equipamentos: React.FC = () => {
+  const [equipments, setEquipments] = useState<Equipment[]>(mockEquipments);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
-  const filteredEquipments = mockEquipments.filter(equipment => {
-    const matchesSearch = equipment.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         equipment.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         equipment.serialNumber.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredEquipments = equipments.filter(equipment => {
+    const matchesSearch = 
+      equipment.nomeMaquina.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      equipment.macAddress.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      equipment.filial.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      equipment.processadorCPU.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === '' || equipment.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -75,6 +92,17 @@ export const Equipamentos: React.FC = () => {
     }
   };
 
+  const handleAddEquipment = (data: any) => {
+    const newEquipment: Equipment = {
+      id: Date.now().toString(),
+      ...data,
+      status: 'Em Estoque' as const,
+      location: 'Estoque',
+      acquisitionDate: new Date().toISOString().split('T')[0]
+    };
+    setEquipments([...equipments, newEquipment]);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -82,7 +110,10 @@ export const Equipamentos: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900">Equipamentos</h1>
           <p className="text-gray-600 mt-2">Gerencie todos os ativos de TI</p>
         </div>
-        <button className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+        <button 
+          onClick={() => setShowForm(true)}
+          className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+        >
           Adicionar Equipamento
         </button>
       </div>
@@ -94,7 +125,7 @@ export const Equipamentos: React.FC = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
             <input
               type="text"
-              placeholder="Buscar por marca, modelo ou série..."
+              placeholder="Buscar por nome, MAC, filial..."
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -111,7 +142,11 @@ export const Equipamentos: React.FC = () => {
             <option value="Desativado">Desativado</option>
             <option value="Em Estoque">Em Estoque</option>
           </select>
-          <button className="bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent/90 transition-colors">
+          <button 
+            onClick={() => setShowReportModal(true)}
+            className="bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2"
+          >
+            <FileText size={16} />
             Gerar Relatório
           </button>
         </div>
@@ -123,12 +158,14 @@ export const Equipamentos: React.FC = () => {
           <div key={equipment.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <Monitor className="text-primary" size={20} />
+                <div className={`p-2 rounded-lg ${equipment.isCaixa ? 'bg-red-100' : 'bg-blue-100'}`}>
+                  <Monitor className={equipment.isCaixa ? 'text-red-600' : 'text-blue-600'} size={20} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">{equipment.brand} {equipment.model}</h3>
-                  <p className="text-sm text-gray-600">{equipment.type}</p>
+                  <h3 className="font-semibold text-gray-900">{equipment.nomeMaquina}</h3>
+                  <p className="text-sm text-gray-600">
+                    {equipment.filial} - {equipment.isCaixa ? 'Caixa' : 'Equipamento'}
+                  </p>
                 </div>
               </div>
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(equipment.status)}`}>
@@ -138,12 +175,20 @@ export const Equipamentos: React.FC = () => {
 
             <div className="space-y-2 mb-4">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Série:</span>
-                <span className="text-gray-900 font-medium">{equipment.serialNumber}</span>
+                <span className="text-gray-600">MAC:</span>
+                <span className="text-gray-900 font-medium">{equipment.macAddress}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Patrimônio:</span>
-                <span className="text-gray-900 font-medium">{equipment.patrimony}</span>
+                <span className="text-gray-600">CPU:</span>
+                <span className="text-gray-900 font-medium">{equipment.processadorCPU}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">RAM:</span>
+                <span className="text-gray-900 font-medium">{equipment.memoriaRAM}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Armazenamento:</span>
+                <span className="text-gray-900 font-medium">{equipment.armazenamento}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Localização:</span>
@@ -153,6 +198,12 @@ export const Equipamentos: React.FC = () => {
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Usuário:</span>
                   <span className="text-gray-900 font-medium">{equipment.assignedUser}</span>
+                </div>
+              )}
+              {equipment.isCaixa && equipment.pdc && (
+                <div className="text-sm">
+                  <span className="text-gray-600">PDC:</span>
+                  <p className="text-gray-900 font-medium mt-1">{equipment.pdc}</p>
                 </div>
               )}
             </div>
@@ -177,6 +228,20 @@ export const Equipamentos: React.FC = () => {
           <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum equipamento encontrado</h3>
           <p className="text-gray-600">Tente ajustar os filtros ou adicione um novo equipamento</p>
         </div>
+      )}
+
+      {showForm && (
+        <EquipmentForm
+          onClose={() => setShowForm(false)}
+          onSubmit={handleAddEquipment}
+        />
+      )}
+
+      {showReportModal && (
+        <ReportModal
+          onClose={() => setShowReportModal(false)}
+          equipments={equipments}
+        />
       )}
     </div>
   );
