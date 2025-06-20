@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { Dashboard } from "./components/Dashboard";
 import { Equipamentos } from "./components/Equipamentos";
+import { MovementDashboard } from "./components/MovementDashboard";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
@@ -39,10 +40,7 @@ const App = () => (
           } />
           <Route path="/movimentacoes" element={
             <Layout>
-              <div className="text-center py-12">
-                <h1 className="text-2xl font-bold text-gray-900">Movimentações</h1>
-                <p className="text-gray-600 mt-2">Funcionalidade em desenvolvimento</p>
-              </div>
+              <MovementDashboard />
             </Layout>
           } />
           <Route path="/manutencoes" element={
