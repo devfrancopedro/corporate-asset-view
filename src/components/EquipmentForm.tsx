@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const equipmentSchema = z.object({
   filial: z.string().min(1, 'Número da filial é obrigatório'),
@@ -22,6 +23,7 @@ const equipmentSchema = z.object({
   processadorCPU: z.string().min(1, 'Processador CPU é obrigatório'),
   memoriaRAM: z.string().min(1, 'Memória RAM é obrigatória'),
   armazenamento: z.string().min(1, 'SSD ou HD é obrigatório'),
+  sistemaOperacional: z.string().min(1, 'Sistema operacional é obrigatório'),
   isCaixa: z.boolean(),
   pdc: z.string().optional(),
 });
@@ -43,6 +45,7 @@ export const EquipmentForm: React.FC<EquipmentFormProps> = ({ onClose, onSubmit 
       processadorCPU: '',
       memoriaRAM: '',
       armazenamento: '',
+      sistemaOperacional: '',
       isCaixa: false,
       pdc: '',
     },
@@ -165,6 +168,33 @@ export const EquipmentForm: React.FC<EquipmentFormProps> = ({ onClose, onSubmit 
                     <FormControl>
                       <Input placeholder="Ex: SSD 256GB" {...field} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="sistemaOperacional"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sistema Operacional</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o sistema operacional" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Windows 11">Windows 11</SelectItem>
+                        <SelectItem value="Windows 10">Windows 10</SelectItem>
+                        <SelectItem value="Windows 7">Windows 7</SelectItem>
+                        <SelectItem value="Linux Ubuntu">Linux Ubuntu</SelectItem>
+                        <SelectItem value="Linux CentOS">Linux CentOS</SelectItem>
+                        <SelectItem value="macOS">macOS</SelectItem>
+                        <SelectItem value="Outros">Outros</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

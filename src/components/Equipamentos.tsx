@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
-import { Monitor, Search, Settings, Users, ArrowRight, FileText } from 'lucide-react';
+import { Monitor, Search, Settings, ArrowRight, FileText } from 'lucide-react';
 import { EquipmentForm } from './EquipmentForm';
 import { ReportModal } from './ReportModal';
+import { MovementHistoryModal } from './MovementHistoryModal';
 
 interface Equipment {
   id: string;
@@ -12,12 +13,20 @@ interface Equipment {
   processadorCPU: string;
   memoriaRAM: string;
   armazenamento: string;
+  sistemaOperacional: string;
   isCaixa: boolean;
   pdc?: string;
   status: 'Ativo' | 'Em Manutenção' | 'Desativado' | 'Em Estoque';
   location: string;
   assignedUser?: string;
   acquisitionDate: string;
+}
+
+interface MovementRecord {
+  id: string;
+  date: string;
+  description: string;
+  type: 'maintenance' | 'transfer' | 'upgrade' | 'other';
 }
 
 const mockEquipments: Equipment[] = [
@@ -29,6 +38,7 @@ const mockEquipments: Equipment[] = [
     processadorCPU: 'Intel Core i5-12400',
     memoriaRAM: '8GB DDR4',
     armazenamento: 'SSD 256GB',
+    sistemaOperacional: 'Windows 11',
     isCaixa: false,
     status: 'Ativo',
     location: 'TI',
@@ -43,6 +53,7 @@ const mockEquipments: Equipment[] = [
     processadorCPU: 'Intel Core i3-10100',
     memoriaRAM: '4GB DDR4',
     armazenamento: 'SSD 128GB',
+    sistemaOperacional: 'Windows 10',
     isCaixa: true,
     pdc: 'PDC Principal - Configuração especial para vendas',
     status: 'Ativo',
@@ -58,6 +69,7 @@ const mockEquipments: Equipment[] = [
     processadorCPU: 'AMD Ryzen 5 5600G',
     memoriaRAM: '16GB DDR4',
     armazenamento: 'SSD 512GB',
+    sistemaOperacional: 'Linux Ubuntu',
     isCaixa: false,
     status: 'Em Manutenção',
     location: 'Administrativo',
@@ -65,12 +77,58 @@ const mockEquipments: Equipment[] = [
   }
 ];
 
+const mockMovements: { [key: string]: MovementRecord[] } = {
+  '1': [
+    {
+      id: '1',
+      date: '2024-01-15T10:30:00Z',
+      description: 'Trocado SSD de 128GB para 256GB',
+      type: 'upgrade'
+    },
+    {
+      id: '2',
+      date: '2024-02-10T14:20:00Z',
+      description: 'Formatado - Reinstalação do Windows 11',
+      type: 'maintenance'
+    },
+    {
+      id: '3',
+      date: '2024-03-05T09:15:00Z',
+      description: 'Trocado memória RAM de 4GB para 8GB',
+      type: 'upgrade'
+    }
+  ],
+  '2': [
+    {
+      id: '4',
+      date: '2024-01-20T11:00:00Z',
+      description: 'Configuração inicial do PDC',
+      type: 'other'
+    },
+    {
+      id: '5',
+      date: '2024-02-25T16:45:00Z',
+      description: 'Manutenção preventiva - Limpeza interna',
+      type: 'maintenance'
+    }
+  ],
+  '3': [
+    {
+      id: '6',
+      date: '2024-03-12T13:30:00Z',
+      description: 'Diagnóstico de problema na placa mãe',
+      type: 'maintenance'
+    }
+  ]
+};
+
 export const Equipamentos: React.FC = () => {
   const [equipments, setEquipments] = useState<Equipment[]>(mockEquipments);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
+  const [selectedEquipmentId, setSelectedEquipmentId] = useState<string | null>(null);
 
   const filteredEquipments = equipments.filter(equipment => {
     const matchesSearch = 
@@ -102,6 +160,18 @@ export const Equipamentos: React.FC = () => {
     };
     setEquipments([...equipments, newEquipment]);
   };
+
+  const handleShowMovements = (equipmentId: string) => {
+    setSelectedEquipmentId(equipmentId);
+  };
+
+  const selectedEquipment = selectedEquipmentId 
+    ? equipments.find(eq => eq.id === selectedEquipmentId)
+    : null;
+
+  const selectedMovements = selectedEquipmentId 
+    ? mockMovements[selectedEquipmentId] || []
+    : [];
 
   return (
     <div className="space-y-6">
@@ -191,6 +261,10 @@ export const Equipamentos: React.FC = () => {
                 <span className="text-gray-900 font-medium">{equipment.armazenamento}</span>
               </div>
               <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Sistema:</span>
+                <span className="text-gray-900 font-medium">{equipment.sistemaOperacional}</span>
+              </div>
+              <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Localização:</span>
                 <span className="text-gray-900 font-medium">{equipment.location}</span>
               </div>
@@ -213,7 +287,10 @@ export const Equipamentos: React.FC = () => {
                 <Settings size={14} />
                 <span>Editar</span>
               </button>
-              <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              <button 
+                onClick={() => handleShowMovements(equipment.id)}
+                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              >
                 <ArrowRight size={14} />
                 <span>Movimentar</span>
               </button>
@@ -241,6 +318,14 @@ export const Equipamentos: React.FC = () => {
         <ReportModal
           onClose={() => setShowReportModal(false)}
           equipments={equipments}
+        />
+      )}
+
+      {selectedEquipmentId && selectedEquipment && (
+        <MovementHistoryModal
+          onClose={() => setSelectedEquipmentId(null)}
+          equipmentName={selectedEquipment.nomeMaquina}
+          movements={selectedMovements}
         />
       )}
     </div>
