@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Monitor, hard-drive, mouse, keyboard, Plus, Package } from 'lucide-react';
+import { Monitor, HardDrive, Mouse, Keyboard, Plus, Package } from 'lucide-react';
 import { PeripheralForm } from './PeripheralForm';
 
 interface Peripheral {
@@ -27,13 +27,13 @@ export const MovementDashboard: React.FC = () => {
     switch (type) {
       case 'ssd':
       case 'hd':
-        return <hard-drive className="text-blue-600" size={20} />;
+        return <HardDrive className="text-blue-600" size={20} />;
       case 'memoria_ram':
         return <Monitor className="text-green-600" size={20} />;
       case 'teclado':
-        return <keyboard className="text-purple-600" size={20} />;
+        return <Keyboard className="text-purple-600" size={20} />;
       case 'mouse':
-        return <mouse className="text-red-600" size={20} />;
+        return <Mouse className="text-red-600" size={20} />;
       default:
         return <Package className="text-gray-600" size={20} />;
     }
@@ -85,7 +85,7 @@ export const MovementDashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <div className="flex items-center gap-2 mb-2">
-            <hard-drive className="text-blue-600" size={20} />
+            <HardDrive className="text-blue-600" size={20} />
             <span className="text-sm font-medium text-gray-600">SSDs</span>
           </div>
           <div className="text-2xl font-bold text-gray-900">{getTotalByType('ssd')}</div>
@@ -93,7 +93,7 @@ export const MovementDashboard: React.FC = () => {
         
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <div className="flex items-center gap-2 mb-2">
-            <hard-drive className="text-green-600" size={20} />
+            <HardDrive className="text-green-600" size={20} />
             <span className="text-sm font-medium text-gray-600">HDs</span>
           </div>
           <div className="text-2xl font-bold text-gray-900">{getTotalByType('hd')}</div>
@@ -109,7 +109,7 @@ export const MovementDashboard: React.FC = () => {
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <div className="flex items-center gap-2 mb-2">
-            <keyboard className="text-orange-600" size={20} />
+            <Keyboard className="text-orange-600" size={20} />
             <span className="text-sm font-medium text-gray-600">Teclados</span>
           </div>
           <div className="text-2xl font-bold text-gray-900">{getTotalByType('teclado')}</div>
@@ -117,7 +117,7 @@ export const MovementDashboard: React.FC = () => {
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <div className="flex items-center gap-2 mb-2">
-            <mouse className="text-red-600" size={20} />
+            <Mouse className="text-red-600" size={20} />
             <span className="text-sm font-medium text-gray-600">Mouses</span>
           </div>
           <div className="text-2xl font-bold text-gray-900">{getTotalByType('mouse')}</div>
