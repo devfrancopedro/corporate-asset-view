@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
 import { Wrench, Search, Plus, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import { NewMaintenanceForm } from './NewMaintenanceForm';
 
 interface MaintenanceRecord {
   id: string;
@@ -13,6 +13,7 @@ interface MaintenanceRecord {
   description: string;
   technician: string;
   assignedUser?: string;
+  stockItems?: {id: string, quantity: number}[];
 }
 
 const mockMaintenances: MaintenanceRecord[] = [
@@ -64,10 +65,15 @@ const mockMaintenances: MaintenanceRecord[] = [
 ];
 
 export const Manutencoes: React.FC = () => {
-  const [maintenances] = useState<MaintenanceRecord[]>(mockMaintenances);
+  const [maintenances, setMaintenances] = useState<MaintenanceRecord[]>(mockMaintenances);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [showForm, setShowForm] = useState(false);
+
+  const handleNewMaintenance = (newMaintenance: MaintenanceRecord) => {
+    setMaintenances(prev => [newMaintenance, ...prev]);
+    setShowForm(false);
+  };
 
   const filteredMaintenances = maintenances.filter(maintenance => {
     const matchesSearch = 
@@ -127,13 +133,18 @@ export const Manutencoes: React.FC = () => {
           <p className="text-gray-600 mt-2">Gerencie todas as manutenções dos equipamentos</p>
         </div>
         <button 
-          onClick={() => setShowForm(true)}
+          onClick={() => setShowForm(!showForm)}
           className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
         >
           <Plus size={16} />
-          Nova Manutenção
+          {showForm ? 'Cancelar' : 'Nova Manutenção'}
         </button>
       </div>
+
+      {/* New Maintenance Form */}
+      {showForm && (
+        <NewMaintenanceForm onSubmit={handleNewMaintenance} />
+      )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

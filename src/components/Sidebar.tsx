@@ -19,7 +19,7 @@ const menuItems = [
 
 export const Sidebar: React.FC = () => {
   return (
-    <div className="w-64 bg-primary text-white flex flex-col">
+    <div className="w-64 h-screen bg-primary text-white flex flex-col">
       <div className="p-6 border-b border-primary-foreground/10">
         <h1 className="text-xl font-bold">Controle de Ativos</h1>
         <p className="text-sm text-primary-foreground/70 mt-1">Sistema de TI</p>
