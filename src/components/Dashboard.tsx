@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Monitor, Users, ArrowRight, Settings } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const StatCard: React.FC<{
   title: string;
@@ -30,12 +31,26 @@ const StatCard: React.FC<{
 };
 
 export const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
+
   const recentActivity = [
     { id: 1, action: 'Notebook Dell atribuído a João Silva', time: '2 horas atrás', type: 'assignment' },
     { id: 2, action: 'Impressora HP em manutenção', time: '4 horas atrás', type: 'maintenance' },
     { id: 3, action: 'Monitor Samsung devolvido por Maria Santos', time: '1 dia atrás', type: 'return' },
     { id: 4, action: 'Desktop Lenovo cadastrado no sistema', time: '2 dias atrás', type: 'register' },
   ];
+
+  const handleCadastrarEquipamento = () => {
+    navigate('/equipamentos');
+  };
+
+  const handleNovaMovimentacao = () => {
+    navigate('/movimentacoes');
+  };
+
+  const handleRegistrarManutencao = () => {
+    navigate('/manutencoes');
+  };
 
   return (
     <div className="space-y-6">
@@ -138,15 +153,24 @@ export const Dashboard: React.FC = () => {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Ações Rápidas</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <button 
+            onClick={handleCadastrarEquipamento}
+            className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
             <Monitor className="text-primary" size={20} />
             <span className="text-sm font-medium text-gray-700">Cadastrar Equipamento</span>
           </button>
-          <button className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <button 
+            onClick={handleNovaMovimentacao}
+            className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
             <ArrowRight className="text-primary" size={20} />
             <span className="text-sm font-medium text-gray-700">Nova Movimentação</span>
           </button>
-          <button className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <button 
+            onClick={handleRegistrarManutencao}
+            className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
             <Settings className="text-primary" size={20} />
             <span className="text-sm font-medium text-gray-700">Registrar Manutenção</span>
           </button>

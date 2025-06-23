@@ -1,9 +1,9 @@
-
 import React, { useState } from 'react';
 import { Monitor, Search, Settings, ArrowRight, FileText } from 'lucide-react';
 import { EquipmentForm } from './EquipmentForm';
 import { ReportModal } from './ReportModal';
 import { MovementHistoryModal } from './MovementHistoryModal';
+import { EditEquipmentModal } from './EditEquipmentModal';
 
 interface Equipment {
   id: string;
@@ -129,6 +129,7 @@ export const Equipamentos: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [selectedEquipmentId, setSelectedEquipmentId] = useState<string | null>(null);
+  const [editingEquipment, setEditingEquipment] = useState<Equipment | null>(null);
 
   const filteredEquipments = equipments.filter(equipment => {
     const matchesSearch = 
@@ -159,6 +160,17 @@ export const Equipamentos: React.FC = () => {
       acquisitionDate: new Date().toISOString().split('T')[0]
     };
     setEquipments([...equipments, newEquipment]);
+  };
+
+  const handleEditEquipment = (equipment: Equipment) => {
+    setEditingEquipment(equipment);
+  };
+
+  const handleSaveEquipment = (updatedEquipment: Equipment) => {
+    setEquipments(prev => prev.map(eq => 
+      eq.id === updatedEquipment.id ? updatedEquipment : eq
+    ));
+    setEditingEquipment(null);
   };
 
   const handleShowMovements = (equipmentId: string) => {
@@ -283,7 +295,10 @@ export const Equipamentos: React.FC = () => {
             </div>
 
             <div className="flex gap-2">
-              <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              <button 
+                onClick={() => handleEditEquipment(equipment)}
+                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              >
                 <Settings size={14} />
                 <span>Editar</span>
               </button>
@@ -326,6 +341,14 @@ export const Equipamentos: React.FC = () => {
           onClose={() => setSelectedEquipmentId(null)}
           equipmentName={selectedEquipment.nomeMaquina}
           movements={selectedMovements}
+        />
+      )}
+
+      {editingEquipment && (
+        <EditEquipmentModal
+          equipment={editingEquipment}
+          onClose={() => setEditingEquipment(null)}
+          onSave={handleSaveEquipment}
         />
       )}
     </div>
