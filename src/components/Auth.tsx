@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Login } from './Login';
 import { Register } from './Register';
@@ -23,7 +22,7 @@ export const Auth: React.FC<AuthProps> = ({ onLogin }) => {
       const adminUser: User = {
         id: 'admin',
         name: 'Administrador',
-        email: 'admin@sistema.com',
+        email: 'admin',
         role: 'admin'
       };
       onLogin(adminUser);
