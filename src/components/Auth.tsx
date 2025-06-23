@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Login } from './Login';
 import { Register } from './Register';
@@ -17,8 +18,11 @@ export const Auth: React.FC<AuthProps> = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
 
   const handleLogin = (email: string, password: string) => {
-    // Usuário admin padrão
-    if (email === 'admin' && password === 'admin') {
+    console.log('Tentativa de login:', { email, password });
+    
+    // Usuário admin padrão - aceita "admin" tanto no email quanto na senha
+    if (email.toLowerCase() === 'admin' && password.toLowerCase() === 'admin') {
+      console.log('Login admin detectado');
       const adminUser: User = {
         id: 'admin',
         name: 'Administrador',
@@ -34,7 +38,7 @@ export const Auth: React.FC<AuthProps> = ({ onLogin }) => {
       id: '1',
       name: 'Usuário Teste',
       email: email,
-      role: 'admin'
+      role: 'user'
     };
     onLogin(mockUser);
   };
