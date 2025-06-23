@@ -18,6 +18,18 @@ export const Auth: React.FC<AuthProps> = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
 
   const handleLogin = (email: string, password: string) => {
+    // Usuário admin padrão
+    if (email === 'admin' && password === 'admin') {
+      const adminUser: User = {
+        id: 'admin',
+        name: 'Administrador',
+        email: 'admin@sistema.com',
+        role: 'admin'
+      };
+      onLogin(adminUser);
+      return;
+    }
+
     // Simulação de autenticação - em produção seria uma API
     const mockUser: User = {
       id: '1',
