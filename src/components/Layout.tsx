@@ -14,11 +14,13 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         <Sidebar />
       </div>
       <div className="flex-1 flex flex-col ml-64">
-        <div className="fixed top-0 right-0 left-64 z-20 bg-white border-b border-gray-200">
+        <div className="fixed top-0 right-0 left-64 z-20 bg-white border-b border-gray-200 rounded-br-minimal">
           <Header />
         </div>
         <main className="flex-1 p-6 pt-24">
-          {children}
+          <div className="max-w-7xl mx-auto">
+            {children}
+          </div>
         </main>
       </div>
     </div>

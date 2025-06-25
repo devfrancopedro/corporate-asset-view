@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Wrench, Search, Plus, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { NewMaintenanceForm } from './NewMaintenanceForm';
@@ -134,7 +135,7 @@ export const Manutencoes: React.FC = () => {
         </div>
         <button 
           onClick={() => setShowForm(!showForm)}
-          className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
+          className="btn-minimal bg-primary text-white hover:bg-primary/90 flex items-center gap-2"
         >
           <Plus size={16} />
           {showForm ? 'Cancelar' : 'Nova Manutenção'}
@@ -148,37 +149,37 @@ export const Manutencoes: React.FC = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="card-minimal p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Pendentes</p>
               <p className="text-2xl font-bold text-yellow-600 mt-2">{pendingCount}</p>
             </div>
-            <div className="p-3 rounded-lg bg-yellow-100">
+            <div className="p-3 rounded-minimal bg-yellow-100">
               <Clock className="text-yellow-600" size={24} />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="card-minimal p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Em Andamento</p>
               <p className="text-2xl font-bold text-blue-600 mt-2">{inProgressCount}</p>
             </div>
-            <div className="p-3 rounded-lg bg-blue-100">
+            <div className="p-3 rounded-minimal bg-blue-100">
               <Wrench className="text-blue-600" size={24} />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="card-minimal p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Concluídas</p>
               <p className="text-2xl font-bold text-green-600 mt-2">{completedCount}</p>
             </div>
-            <div className="p-3 rounded-lg bg-green-100">
+            <div className="p-3 rounded-minimal bg-green-100">
               <CheckCircle className="text-green-600" size={24} />
             </div>
           </div>
@@ -186,20 +187,20 @@ export const Manutencoes: React.FC = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="card-minimal p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
             <input
               type="text"
               placeholder="Buscar por equipamento, MB, técnico, usuário..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full input-minimal pl-10 pr-4 py-2 border border-gray-300"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <select
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="input-minimal px-4 py-2 border border-gray-300"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >

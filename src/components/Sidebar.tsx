@@ -6,7 +6,8 @@ import {
   Monitor, 
   Users, 
   ArrowRight, 
-  Settings 
+  Settings,
+  Ticket 
 } from 'lucide-react';
 
 const menuItems = [
@@ -15,11 +16,12 @@ const menuItems = [
   { icon: Users, label: 'Usuários', path: '/usuarios' },
   { icon: ArrowRight, label: 'Movimentações', path: '/movimentacoes' },
   { icon: Settings, label: 'Manutenções', path: '/manutencoes' },
+  { icon: Ticket, label: 'Suporte de TI', path: '/suporte' },
 ];
 
 export const Sidebar: React.FC = () => {
   return (
-    <div className="w-64 h-screen bg-primary text-white flex flex-col">
+    <div className="w-64 h-screen bg-primary text-white flex flex-col rounded-r-minimal">
       <div className="p-6 border-b border-primary-foreground/10">
         <h1 className="text-xl font-bold">Controle de Ativos</h1>
         <p className="text-sm text-primary-foreground/70 mt-1">Sistema de TI</p>
@@ -32,7 +34,7 @@ export const Sidebar: React.FC = () => {
               <NavLink
                 to={item.path}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  `flex items-center gap-3 px-4 py-3 rounded-minimal transition-colors ${
                     isActive
                       ? 'bg-accent text-white'
                       : 'text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-white'

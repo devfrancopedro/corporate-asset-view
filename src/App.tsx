@@ -10,6 +10,7 @@ import { Dashboard } from "./components/Dashboard";
 import { Equipamentos } from "./components/Equipamentos";
 import { MovementDashboard } from "./components/MovementDashboard";
 import { Manutencoes } from "./components/Manutencoes";
+import { SupportTickets } from "./components/SupportTickets";
 import { UserDashboard } from "./components/UserDashboard";
 import { Auth } from "./components/Auth";
 import Index from "./pages/Index";
@@ -80,6 +81,11 @@ const App = () => {
             <Route path="/manutencoes" element={
               <Layout>
                 <Manutencoes />
+              </Layout>
+            } />
+            <Route path="/suporte" element={
+              <Layout>
+                <SupportTickets />
               </Layout>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

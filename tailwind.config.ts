@@ -26,32 +26,32 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: '#022f40',
+					DEFAULT: '#808080',
 					foreground: '#FFFFFF'
 				},
 				secondary: {
-					DEFAULT: '#FFFFFF',
-					foreground: '#022f40'
+					DEFAULT: '#a0a0a0',
+					foreground: '#000000'
 				},
 				accent: {
-					DEFAULT: '#690500',
-					foreground: '#FFFFFF'
+					DEFAULT: '#a0a0a0',
+					foreground: '#000000'
 				},
 				destructive: {
-					DEFAULT: '#690500',
+					DEFAULT: '#808080',
 					foreground: '#FFFFFF'
 				},
 				muted: {
-					DEFAULT: '#f8f9fa',
-					foreground: '#333333'
+					DEFAULT: '#a0a0a0',
+					foreground: '#000000'
 				},
 				card: {
 					DEFAULT: '#FFFFFF',
-					foreground: '#333333'
+					foreground: '#000000'
 				},
 				popover: {
 					DEFAULT: '#FFFFFF',
-					foreground: '#333333'
+					foreground: '#000000'
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
@@ -67,7 +67,8 @@ export default {
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				sm: 'calc(var(--radius) - 4px)',
+				minimal: '1rem'
 			},
 			keyframes: {
 				'accordion-down': {
