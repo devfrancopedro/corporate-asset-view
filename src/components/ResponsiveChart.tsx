@@ -32,65 +32,99 @@ export const ResponsiveChart: React.FC<ResponsiveChartProps> = ({ data, title, d
 
   if (isFullscreen) {
     return (
-      <div className="fixed inset-0 z-50 bg-gray-900 flex flex-col">
-        <div className="flex items-center justify-between p-4 border-b border-gray-700">
+      <div className="fixed inset-0 z-50 bg-black flex flex-col">
+        <div className="flex items-center justify-between p-4 border-b border-gray-800">
           <h3 className="text-lg font-semibold text-white">{title}</h3>
           <button
             onClick={handleCloseFullscreen}
-            className="p-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600"
+            className="p-2 rounded-lg bg-gray-800 text-white hover:bg-gray-700"
           >
             <X size={20} />
           </button>
         </div>
         <div className="flex-1 p-4">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#4B5563" />
-              <XAxis dataKey="name" stroke="#D1D5DB" />
-              <YAxis stroke="#D1D5DB" />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: '#374151', 
-                  border: '1px solid #6B7280',
-                  borderRadius: '8px',
-                  color: '#F9FAFB'
-                }} 
-              />
-              <Bar dataKey={dataKey} fill={color} radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          <div className="chart-fullscreen">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                <XAxis 
+                  dataKey="name" 
+                  stroke="#D1D5DB" 
+                  fontSize={12}
+                  tick={{ fill: '#D1D5DB' }}
+                />
+                <YAxis 
+                  stroke="#D1D5DB" 
+                  fontSize={12}
+                  tick={{ fill: '#D1D5DB' }}
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#1F2937', 
+                    border: '1px solid #374151',
+                    borderRadius: '8px',
+                    color: '#F9FAFB'
+                  }} 
+                />
+                <Bar dataKey={dataKey} fill={color} radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative bg-gray-800 rounded-2xl p-4 lg:p-6 border border-gray-600">
+    <div className="relative bg-gray-900 rounded-2xl p-4 lg:p-6 border border-gray-800">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm lg:text-base font-semibold text-white">{title}</h3>
         <button
           onClick={handleFullscreen}
-          className="lg:hidden p-2 rounded-lg bg-gray-700 text-gray-300 hover:bg-gray-600"
+          className="lg:hidden p-2 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700"
           title="Ver em tela cheia"
         >
           <RotateCcw size={16} />
         </button>
       </div>
-      <div className="h-48 sm:h-64 lg:h-80">
+      <div className="chart-mobile">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#4B5563" />
-            <XAxis dataKey="name" stroke="#D1D5DB" fontSize={12} />
-            <YAxis stroke="#D1D5DB" fontSize={12} />
+          <BarChart 
+            data={data} 
+            margin={{ 
+              top: 5, 
+              right: 5, 
+              left: 5, 
+              bottom: 5 
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+            <XAxis 
+              dataKey="name" 
+              stroke="#D1D5DB" 
+              fontSize={10}
+              tick={{ fill: '#D1D5DB', fontSize: 10 }}
+              interval={0}
+              angle={-45}
+              textAnchor="end"
+              height={50}
+            />
+            <YAxis 
+              stroke="#D1D5DB" 
+              fontSize={10}
+              tick={{ fill: '#D1D5DB', fontSize: 10 }}
+              width={30}
+            />
             <Tooltip 
               contentStyle={{ 
-                backgroundColor: '#374151', 
-                border: '1px solid #6B7280',
+                backgroundColor: '#1F2937', 
+                border: '1px solid #374151',
                 borderRadius: '8px',
-                color: '#F9FAFB'
+                color: '#F9FAFB',
+                fontSize: '12px'
               }} 
             />
-            <Bar dataKey={dataKey} fill={color} radius={[4, 4, 0, 0]} />
+            <Bar dataKey={dataKey} fill={color} radius={[2, 2, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>

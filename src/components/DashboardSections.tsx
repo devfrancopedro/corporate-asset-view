@@ -18,13 +18,13 @@ const SectionCard: React.FC<SectionCardProps> = ({ title, description, icon: Ico
   return (
     <div 
       onClick={() => navigate(path)}
-      className="bg-gray-800 rounded-2xl border border-gray-600 p-4 lg:p-6 cursor-pointer hover:bg-gray-750 transition-all duration-300 hover:scale-105 hover:shadow-lg group"
+      className="bg-gray-900 rounded-2xl border border-gray-800 p-4 lg:p-6 cursor-pointer hover:bg-gray-800 transition-all duration-300 hover:scale-105 hover:shadow-lg group"
     >
       <div className="flex items-start justify-between mb-4">
         <div className={`p-3 rounded-2xl ${color}`}>
           <Icon size={24} className="text-white" />
         </div>
-        <ArrowRight size={20} className="text-gray-400 group-hover:text-white transition-colors" />
+        <ArrowRight size={20} className="text-gray-500 group-hover:text-white transition-colors" />
       </div>
       
       <div className="space-y-2">
