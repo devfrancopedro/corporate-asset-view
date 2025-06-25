@@ -15,9 +15,9 @@ export const ResponsiveChart: React.FC<ResponsiveChartProps> = ({ data, title, d
 
   const handleFullscreen = () => {
     setIsFullscreen(true);
-    // Force landscape orientation on mobile
-    if (screen.orientation && screen.orientation.lock) {
-      screen.orientation.lock('landscape').catch(() => {
+    // Force landscape orientation on mobile (with proper type checking)
+    if (typeof screen !== 'undefined' && screen.orientation && 'lock' in screen.orientation) {
+      (screen.orientation as any).lock('landscape').catch(() => {
         // Fallback if orientation lock is not supported
       });
     }
@@ -25,8 +25,8 @@ export const ResponsiveChart: React.FC<ResponsiveChartProps> = ({ data, title, d
 
   const handleCloseFullscreen = () => {
     setIsFullscreen(false);
-    if (screen.orientation && screen.orientation.unlock) {
-      screen.orientation.unlock();
+    if (typeof screen !== 'undefined' && screen.orientation && 'unlock' in screen.orientation) {
+      (screen.orientation as any).unlock();
     }
   };
 
