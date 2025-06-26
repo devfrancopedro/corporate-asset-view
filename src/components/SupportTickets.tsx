@@ -1,10 +1,9 @@
 
 import React, { useState } from 'react';
-import { Ticket, Plus, Clock, CheckCircle, Camera, BarChart3, Calendar, Edit } from 'lucide-react';
+import { Ticket, Plus, Clock, CheckCircle, Camera, BarChart3, Calendar } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { NewTicketForm } from './NewTicketForm';
-import { EditTicketModal } from './EditTicketModal';
 import { useToast } from '@/hooks/use-toast';
 
 interface SupportTicket {
@@ -78,7 +77,6 @@ export const SupportTickets: React.FC = () => {
   const [tickets, setTickets] = useState<SupportTicket[]>(mockTickets);
   const [showForm, setShowForm] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(null);
-  const [editingTicket, setEditingTicket] = useState<SupportTicket | null>(null);
   const { toast } = useToast();
 
   const handleNewTicket = (newTicket: SupportTicket) => {
@@ -99,15 +97,15 @@ export const SupportTickets: React.FC = () => {
   const completedTickets = tickets.filter(t => t.status === 'finalizado');
   const pendingTickets = tickets.filter(t => t.status === 'pendente');
 
-  // Dados para gráfico de tempo de resolução com cores melhoradas
+  // Dados para gráfico de tempo de resolução
   const timeData = completedTickets
     .filter(t => t.timeToCompletion)
     .map(t => ({
-      name: t.title.substring(0, 15) + '...',
+      name: t.title.substring(0, 20) + '...',
       time: t.timeToCompletion
     }));
 
-  // Dados para gráfico mensal com cores melhoradas
+  // Dados para gráfico mensal
   const monthlyData = [
     { month: 'Jan', total: 15, completed: 12 },
     { month: 'Fev', total: 20, completed: 18 },
@@ -132,15 +130,15 @@ export const SupportTickets: React.FC = () => {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6 p-3 sm:p-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="space-y-6 p-6">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Suporte de TI</h1>
-          <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">Gerencie chamados e acompanhe métricas de atendimento</p>
+          <h1 className="text-3xl font-bold text-gray-900">Suporte de TI</h1>
+          <p className="text-gray-600 mt-2">Gerencie chamados e acompanhe métricas de atendimento</p>
         </div>
         <button 
           onClick={() => setShowForm(!showForm)}
-          className="btn-minimal bg-primary text-white hover:bg-primary/90 flex items-center gap-2 w-full sm:w-auto justify-center"
+          className="btn-minimal bg-primary text-white hover:bg-primary/90 flex items-center gap-2"
         >
           <Plus size={16} />
           {showForm ? 'Cancelar' : 'Novo Chamado'}
@@ -153,96 +151,89 @@ export const SupportTickets: React.FC = () => {
       )}
 
       {/* Cards de estatísticas */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-        <div className="card-minimal p-4 sm:p-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="card-minimal p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm font-medium text-gray-600">Total de Chamados</p>
-              <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1 sm:mt-2">{tickets.length}</p>
+              <p className="text-sm font-medium text-gray-600">Total de Chamados</p>
+              <p className="text-2xl font-bold text-gray-900 mt-2">{tickets.length}</p>
             </div>
-            <div className="p-2 sm:p-3 rounded-minimal bg-gray-100">
-              <Ticket className="text-gray-600" size={20} />
+            <div className="p-3 rounded-minimal bg-gray-100">
+              <Ticket className="text-gray-600" size={24} />
             </div>
           </div>
         </div>
 
-        <div className="card-minimal p-4 sm:p-6">
+        <div className="card-minimal p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm font-medium text-gray-600">Pendentes</p>
-              <p className="text-xl sm:text-2xl font-bold text-yellow-600 mt-1 sm:mt-2">{pendingTickets.length}</p>
+              <p className="text-sm font-medium text-gray-600">Pendentes</p>
+              <p className="text-2xl font-bold text-yellow-600 mt-2">{pendingTickets.length}</p>
             </div>
-            <div className="p-2 sm:p-3 rounded-minimal bg-yellow-100">
-              <Clock className="text-yellow-600" size={20} />
+            <div className="p-3 rounded-minimal bg-yellow-100">
+              <Clock className="text-yellow-600" size={24} />
             </div>
           </div>
         </div>
 
-        <div className="card-minimal p-4 sm:p-6">
+        <div className="card-minimal p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm font-medium text-gray-600">Finalizados</p>
-              <p className="text-xl sm:text-2xl font-bold text-green-600 mt-1 sm:mt-2">{completedTickets.length}</p>
+              <p className="text-sm font-medium text-gray-600">Finalizados</p>
+              <p className="text-2xl font-bold text-green-600 mt-2">{completedTickets.length}</p>
             </div>
-            <div className="p-2 sm:p-3 rounded-minimal bg-green-100">
-              <CheckCircle className="text-green-600" size={20} />
+            <div className="p-3 rounded-minimal bg-green-100">
+              <CheckCircle className="text-green-600" size={24} />
             </div>
           </div>
         </div>
 
-        <div className="card-minimal p-4 sm:p-6">
+        <div className="card-minimal p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm font-medium text-gray-600">Tempo Médio</p>
-              <p className="text-xl sm:text-2xl font-bold text-blue-600 mt-1 sm:mt-2">
+              <p className="text-sm font-medium text-gray-600">Tempo Médio</p>
+              <p className="text-2xl font-bold text-blue-600 mt-2">
                 {completedTickets.length > 0 
                   ? `${(completedTickets.reduce((acc, t) => acc + (t.timeToCompletion || 0), 0) / completedTickets.length).toFixed(1)}h`
                   : '0h'
                 }
               </p>
             </div>
-            <div className="p-2 sm:p-3 rounded-minimal bg-blue-100">
-              <BarChart3 className="text-blue-600" size={20} />
+            <div className="p-3 rounded-minimal bg-blue-100">
+              <BarChart3 className="text-blue-600" size={24} />
             </div>
           </div>
         </div>
       </div>
 
       {/* Gráficos */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        <div className="card-minimal p-4 sm:p-6">
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Tempo de Resolução</h3>
-          <ChartContainer config={chartConfig} className="h-[250px] sm:h-[300px]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="card-minimal p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Tempo de Resolução</h3>
+          <ChartContainer config={chartConfig} className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={timeData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis 
-                  dataKey="name" 
-                  tick={{ fontSize: 12 }}
-                  interval={0}
-                  angle={-45}
-                  textAnchor="end"
-                  height={60}
-                />
-                <YAxis tick={{ fontSize: 12 }} />
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="time" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="time" fill="#808080" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
         </div>
 
-        <div className="card-minimal p-4 sm:p-6">
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Chamados por Mês</h3>
-          <ChartContainer config={chartConfig} className="h-[250px] sm:h-[300px]">
+        <div className="card-minimal p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Chamados por Mês</h3>
+          <ChartContainer config={chartConfig} className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={monthlyData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Line type="monotone" dataKey="total" stroke="#ef4444" strokeWidth={3} name="Total" />
-                <Line type="monotone" dataKey="completed" stroke="#22c55e" strokeWidth={3} name="Concluídos" />
+                <Line type="monotone" dataKey="total" stroke="#808080" strokeWidth={3} />
+                <Line type="monotone" dataKey="completed" stroke="#a0a0a0" strokeWidth={3} />
               </LineChart>
             </ResponsiveContainer>
           </ChartContainer>
@@ -250,23 +241,23 @@ export const SupportTickets: React.FC = () => {
       </div>
 
       {/* Lista de chamados */}
-      <div className="card-minimal p-4 sm:p-6">
-        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Chamados Recentes</h2>
+      <div className="card-minimal p-6">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Chamados Recentes</h2>
         
         <div className="space-y-4">
           {tickets.map((ticket) => (
             <div key={ticket.id} className="border border-gray-200 rounded-minimal p-4 hover:shadow-sm transition-shadow">
-              <div className="flex flex-col sm:flex-row items-start justify-between mb-3 gap-3">
-                <div className="flex items-center gap-3 flex-1">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-3">
                   <div className="p-2 bg-gray-100 rounded-minimal">
                     <Ticket className="text-gray-600" size={20} />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-gray-900 truncate">{ticket.title}</h4>
+                  <div>
+                    <h4 className="font-medium text-gray-900">{ticket.title}</h4>
                     <p className="text-sm text-gray-600">Categoria: {ticket.category}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-2">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(ticket.priority)}`}>
                     {ticket.priority.toUpperCase()}
                   </span>
@@ -274,13 +265,6 @@ export const SupportTickets: React.FC = () => {
                     {ticket.status === 'pendente' ? <Clock size={12} /> : <CheckCircle size={12} />}
                     {ticket.status === 'pendente' ? 'Pendente' : 'Finalizado'}
                   </span>
-                  <button
-                    onClick={() => setEditingTicket(ticket)}
-                    className="btn-minimal bg-blue-500 text-white hover:bg-blue-600 p-2"
-                    title="Editar chamado"
-                  >
-                    <Edit size={14} />
-                  </button>
                 </div>
               </div>
 
@@ -351,16 +335,6 @@ export const SupportTickets: React.FC = () => {
           </div>
         )}
       </div>
-
-      {/* Modal de edição */}
-      {editingTicket && (
-        <EditTicketModal
-          ticket={editingTicket}
-          isOpen={!!editingTicket}
-          onClose={() => setEditingTicket(null)}
-          onUpdate={handleUpdateTicket}
-        />
-      )}
     </div>
   );
 };

@@ -1,7 +1,7 @@
+
 import React, { useState } from 'react';
 import { Wrench, Search, Plus, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { NewMaintenanceForm } from './NewMaintenanceForm';
-import { ResponsiveChart } from './ResponsiveChart';
 
 interface MaintenanceRecord {
   id: string;
@@ -126,23 +126,16 @@ export const Manutencoes: React.FC = () => {
   const inProgressCount = maintenances.filter(m => m.status === 'em_andamento').length;
   const completedCount = maintenances.filter(m => m.status === 'concluida').length;
 
-  // Chart data
-  const chartData = [
-    { name: 'Pendentes', value: pendingCount },
-    { name: 'Em Andamento', value: inProgressCount },
-    { name: 'Concluídas', value: completedCount }
-  ];
-
   return (
-    <div className="space-y-4 lg:space-y-6 max-w-full overflow-x-hidden">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="min-w-0">
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white truncate">Manutenções</h1>
-          <p className="text-sm lg:text-base text-gray-300 mt-1 lg:mt-2">Gerencie todas as manutenções dos equipamentos</p>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Manutenções</h1>
+          <p className="text-gray-600 mt-2">Gerencie todas as manutenções dos equipamentos</p>
         </div>
         <button 
           onClick={() => setShowForm(!showForm)}
-          className="btn-minimal bg-gray-600 text-white hover:bg-gray-500 flex items-center gap-2 w-full sm:w-auto justify-center"
+          className="btn-minimal bg-primary text-white hover:bg-primary/90 flex items-center gap-2"
         >
           <Plus size={16} />
           {showForm ? 'Cancelar' : 'Nova Manutenção'}
@@ -155,67 +148,59 @@ export const Manutencoes: React.FC = () => {
       )}
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-        <div className="bg-gray-800 rounded-2xl shadow-sm border border-gray-600 p-4 lg:p-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="card-minimal p-6">
           <div className="flex items-center justify-between">
-            <div className="min-w-0">
-              <p className="text-xs lg:text-sm font-medium text-gray-300">Pendentes</p>
-              <p className="text-xl lg:text-2xl font-bold text-yellow-400 mt-2">{pendingCount}</p>
+            <div>
+              <p className="text-sm font-medium text-gray-600">Pendentes</p>
+              <p className="text-2xl font-bold text-yellow-600 mt-2">{pendingCount}</p>
             </div>
-            <div className="p-2 lg:p-3 rounded-2xl bg-yellow-900/30 flex-shrink-0">
-              <Clock className="text-yellow-400" size={20} />
+            <div className="p-3 rounded-minimal bg-yellow-100">
+              <Clock className="text-yellow-600" size={24} />
             </div>
           </div>
         </div>
 
-        <div className="bg-gray-800 rounded-2xl shadow-sm border border-gray-600 p-4 lg:p-6">
+        <div className="card-minimal p-6">
           <div className="flex items-center justify-between">
-            <div className="min-w-0">
-              <p className="text-xs lg:text-sm font-medium text-gray-300">Em Andamento</p>
-              <p className="text-xl lg:text-2xl font-bold text-blue-400 mt-2">{inProgressCount}</p>
+            <div>
+              <p className="text-sm font-medium text-gray-600">Em Andamento</p>
+              <p className="text-2xl font-bold text-blue-600 mt-2">{inProgressCount}</p>
             </div>
-            <div className="p-2 lg:p-3 rounded-2xl bg-blue-900/30 flex-shrink-0">
-              <Wrench className="text-blue-400" size={20} />
+            <div className="p-3 rounded-minimal bg-blue-100">
+              <Wrench className="text-blue-600" size={24} />
             </div>
           </div>
         </div>
 
-        <div className="bg-gray-800 rounded-2xl shadow-sm border border-gray-600 p-4 lg:p-6 sm:col-span-2 lg:col-span-1">
+        <div className="card-minimal p-6">
           <div className="flex items-center justify-between">
-            <div className="min-w-0">
-              <p className="text-xs lg:text-sm font-medium text-gray-300">Concluídas</p>
-              <p className="text-xl lg:text-2xl font-bold text-green-400 mt-2">{completedCount}</p>
+            <div>
+              <p className="text-sm font-medium text-gray-600">Concluídas</p>
+              <p className="text-2xl font-bold text-green-600 mt-2">{completedCount}</p>
             </div>
-            <div className="p-2 lg:p-3 rounded-2xl bg-green-900/30 flex-shrink-0">
-              <CheckCircle className="text-green-400" size={20} />
+            <div className="p-3 rounded-minimal bg-green-100">
+              <CheckCircle className="text-green-600" size={24} />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Chart */}
-      <ResponsiveChart
-        data={chartData}
-        title="Distribuição de Manutenções"
-        dataKey="value"
-        color="#60A5FA"
-      />
-
       {/* Filters */}
-      <div className="bg-gray-800 rounded-2xl shadow-sm border border-gray-600 p-4 lg:p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="card-minimal p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
             <input
               type="text"
               placeholder="Buscar por equipamento, MB, técnico, usuário..."
-              className="w-full input-minimal pl-10 pr-4 py-2 border border-gray-600 bg-gray-700 text-white placeholder-gray-400"
+              className="w-full input-minimal pl-10 pr-4 py-2 border border-gray-300"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <select
-            className="input-minimal px-4 py-2 border border-gray-600 bg-gray-700 text-white"
+            className="input-minimal px-4 py-2 border border-gray-300"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
@@ -228,12 +213,12 @@ export const Manutencoes: React.FC = () => {
       </div>
 
       {/* Maintenances List */}
-      <div className="bg-gray-800 rounded-2xl shadow-sm border border-gray-600 p-4 lg:p-6">
-        <h2 className="text-lg lg:text-xl font-semibold text-white mb-4">Lista de Manutenções</h2>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Lista de Manutenções</h2>
         
         <div className="space-y-4">
           {filteredMaintenances.map((maintenance) => (
-            <div key={maintenance.id} className="border border-gray-600 rounded-2xl p-4 hover:shadow-sm transition-shadow bg-gray-700/50">
+            <div key={maintenance.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-gray-100 rounded-lg">
@@ -297,8 +282,8 @@ export const Manutencoes: React.FC = () => {
         </div>
 
         {filteredMaintenances.length === 0 && (
-          <div className="text-center py-8 text-gray-400">
-            <Wrench className="mx-auto mb-4 text-gray-500" size={48} />
+          <div className="text-center py-8 text-gray-500">
+            <Wrench className="mx-auto mb-4 text-gray-400" size={48} />
             <p>Nenhuma manutenção encontrada</p>
           </div>
         )}

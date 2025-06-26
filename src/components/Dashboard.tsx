@@ -1,7 +1,7 @@
+
 import React from 'react';
 import { Monitor, Users, ArrowRight, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { DashboardSections } from './DashboardSections';
 
 const StatCard: React.FC<{
   title: string;
@@ -16,14 +16,14 @@ const StatCard: React.FC<{
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs lg:text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-xl lg:text-2xl font-bold text-gray-900 mt-1 lg:mt-2">{value}</p>
+          <p className="text-sm font-medium text-gray-600">{title}</p>
+          <p className="text-2xl font-bold text-gray-900 mt-2">{value}</p>
         </div>
-        <div className={`p-2 lg:p-3 rounded-2xl ${colorClasses[color]}`}>
-          <Icon size={20} className="lg:w-6 lg:h-6" />
+        <div className={`p-3 rounded-lg ${colorClasses[color]}`}>
+          <Icon size={24} />
         </div>
       </div>
     </div>
@@ -53,17 +53,14 @@ export const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="space-y-4 lg:space-y-6 max-w-full overflow-x-hidden">
+    <div className="space-y-6">
       <div>
-        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">Dashboard</h1>
-        <p className="text-sm lg:text-base text-gray-300 mt-1 lg:mt-2">Visão geral dos ativos de TI</p>
+        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-gray-600 mt-2">Visão geral dos ativos de TI</p>
       </div>
 
-      {/* Dashboard Sections */}
-      <DashboardSections />
-
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="Total de Equipamentos"
           value={127}
@@ -91,17 +88,17 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* Recent Activity and Quick Stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Activity */}
-        <div className="bg-gray-800 rounded-2xl shadow-sm border border-gray-600 p-4 lg:p-6">
-          <h3 className="text-base lg:text-lg font-semibold text-white mb-3 lg:mb-4">Atividades Recentes</h3>
-          <div className="space-y-3 lg:space-y-4">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Atividades Recentes</h3>
+          <div className="space-y-4">
             {recentActivity.map((activity) => (
-              <div key={activity.id} className="flex items-start gap-2 lg:gap-3">
-                <div className="w-2 h-2 bg-gray-500 rounded-full mt-1 lg:mt-2 flex-shrink-0"></div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs lg:text-sm text-gray-200">{activity.action}</p>
-                  <p className="text-xs text-gray-400 mt-1">{activity.time}</p>
+              <div key={activity.id} className="flex items-start gap-3">
+                <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                <div className="flex-1">
+                  <p className="text-sm text-gray-900">{activity.action}</p>
+                  <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
                 </div>
               </div>
             ))}
@@ -109,43 +106,43 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Equipment Status Distribution */}
-        <div className="bg-gray-800 rounded-2xl shadow-sm border border-gray-600 p-4 lg:p-6">
-          <h3 className="text-base lg:text-lg font-semibold text-white mb-3 lg:mb-4">Status dos Equipamentos</h3>
-          <div className="space-y-2 lg:space-y-3">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Status dos Equipamentos</h3>
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs lg:text-sm text-gray-300">Ativos</span>
+              <span className="text-sm text-gray-600">Ativos</span>
               <div className="flex items-center gap-2">
-                <div className="w-16 lg:w-20 h-2 bg-gray-600 rounded-full">
-                  <div className="w-4/5 h-2 bg-gray-500 rounded-full"></div>
+                <div className="w-20 h-2 bg-gray-200 rounded-full">
+                  <div className="w-4/5 h-2 bg-primary rounded-full"></div>
                 </div>
-                <span className="text-xs lg:text-sm font-medium text-white w-6">98</span>
+                <span className="text-sm font-medium text-gray-900">98</span>
               </div>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs lg:text-sm text-gray-300">Em Manutenção</span>
+              <span className="text-sm text-gray-600">Em Manutenção</span>
               <div className="flex items-center gap-2">
-                <div className="w-16 lg:w-20 h-2 bg-gray-600 rounded-full">
-                  <div className="w-1/5 h-2 bg-orange-500 rounded-full"></div>
+                <div className="w-20 h-2 bg-gray-200 rounded-full">
+                  <div className="w-1/5 h-2 bg-accent rounded-full"></div>
                 </div>
-                <span className="text-xs lg:text-sm font-medium text-white w-6">8</span>
+                <span className="text-sm font-medium text-gray-900">8</span>
               </div>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs lg:text-sm text-gray-300">Em Estoque</span>
+              <span className="text-sm text-gray-600">Em Estoque</span>
               <div className="flex items-center gap-2">
-                <div className="w-16 lg:w-20 h-2 bg-gray-600 rounded-full">
-                  <div className="w-1/4 h-2 bg-blue-500 rounded-full"></div>
+                <div className="w-20 h-2 bg-gray-200 rounded-full">
+                  <div className="w-1/4 h-2 bg-gray-400 rounded-full"></div>
                 </div>
-                <span className="text-xs lg:text-sm font-medium text-white w-6">15</span>
+                <span className="text-sm font-medium text-gray-900">15</span>
               </div>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs lg:text-sm text-gray-300">Desativados</span>
+              <span className="text-sm text-gray-600">Desativados</span>
               <div className="flex items-center gap-2">
-                <div className="w-16 lg:w-20 h-2 bg-gray-600 rounded-full">
-                  <div className="w-1/12 h-2 bg-red-500 rounded-full"></div>
+                <div className="w-20 h-2 bg-gray-200 rounded-full">
+                  <div className="w-1/12 h-2 bg-gray-300 rounded-full"></div>
                 </div>
-                <span className="text-xs lg:text-sm font-medium text-white w-6">6</span>
+                <span className="text-sm font-medium text-gray-900">6</span>
               </div>
             </div>
           </div>
@@ -153,29 +150,29 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-gray-800 rounded-2xl shadow-sm border border-gray-600 p-4 lg:p-6">
-        <h3 className="text-base lg:text-lg font-semibold text-white mb-3 lg:mb-4">Ações Rápidas</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-4">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Ações Rápidas</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button 
             onClick={handleCadastrarEquipamento}
-            className="flex items-center gap-2 lg:gap-3 p-3 lg:p-4 border border-gray-600 rounded-2xl hover:bg-gray-700 transition-colors"
+            className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
-            <Monitor className="text-gray-400" size={18} />
-            <span className="text-xs lg:text-sm font-medium text-gray-200">Cadastrar Equipamento</span>
+            <Monitor className="text-primary" size={20} />
+            <span className="text-sm font-medium text-gray-700">Cadastrar Equipamento</span>
           </button>
           <button 
             onClick={handleNovaMovimentacao}
-            className="flex items-center gap-2 lg:gap-3 p-3 lg:p-4 border border-gray-600 rounded-2xl hover:bg-gray-700 transition-colors"
+            className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
-            <ArrowRight className="text-gray-400" size={18} />
-            <span className="text-xs lg:text-sm font-medium text-gray-200">Nova Movimentação</span>
+            <ArrowRight className="text-primary" size={20} />
+            <span className="text-sm font-medium text-gray-700">Nova Movimentação</span>
           </button>
           <button 
             onClick={handleRegistrarManutencao}
-            className="flex items-center gap-2 lg:gap-3 p-3 lg:p-4 border border-gray-600 rounded-2xl hover:bg-gray-700 transition-colors"
+            className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
-            <Settings className="text-gray-400" size={18} />
-            <span className="text-xs lg:text-sm font-medium text-gray-200">Registrar Manutenção</span>
+            <Settings className="text-primary" size={20} />
+            <span className="text-sm font-medium text-gray-700">Registrar Manutenção</span>
           </button>
         </div>
       </div>
