@@ -10,6 +10,11 @@ type Equipment = Database['public']['Tables']['equipments']['Row'];
 type SupportTicket = Database['public']['Tables']['support_tickets']['Row'];
 type Maintenance = Database['public']['Tables']['maintenances']['Row'];
 
+// Create insert types that omit the auto-handled fields
+type EquipmentInsert = Omit<Database['public']['Tables']['equipments']['Insert'], 'created_by'>;
+type SupportTicketInsert = Omit<Database['public']['Tables']['support_tickets']['Insert'], 'created_by'>;
+type MaintenanceInsert = Omit<Database['public']['Tables']['maintenances']['Insert'], 'requested_by'>;
+
 // Export the types for use in other components
 export type { Equipment, SupportTicket, Maintenance };
 
@@ -43,7 +48,7 @@ export const useSupabaseData = () => {
     }
   };
 
-  const createEquipment = async (equipment: Database['public']['Tables']['equipments']['Insert']) => {
+  const createEquipment = async (equipment: EquipmentInsert) => {
     if (!user) return;
     try {
       const { data, error } = await supabase
@@ -143,7 +148,7 @@ export const useSupabaseData = () => {
     }
   };
 
-  const createSupportTicket = async (ticket: Database['public']['Tables']['support_tickets']['Insert']) => {
+  const createSupportTicket = async (ticket: SupportTicketInsert) => {
     if (!user) return;
     try {
       const { data, error } = await supabase
@@ -220,7 +225,7 @@ export const useSupabaseData = () => {
     }
   };
 
-  const createMaintenance = async (maintenance: Database['public']['Tables']['maintenances']['Insert']) => {
+  const createMaintenance = async (maintenance: MaintenanceInsert) => {
     if (!user) return;
     try {
       const { data, error } = await supabase
