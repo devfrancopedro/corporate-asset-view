@@ -1,26 +1,11 @@
+
 import React, { useState } from 'react';
-import { Monitor, Search, Settings, ArrowRight, FileText } from 'lucide-react';
+import { Monitor, Search, Settings, History, FileText, Eye, EyeOff } from 'lucide-react';
 import { EquipmentForm } from './EquipmentForm';
 import { ReportModal } from './ReportModal';
 import { MovementHistoryModal } from './MovementHistoryModal';
 import { EditEquipmentModal } from './EditEquipmentModal';
-
-interface Equipment {
-  id: string;
-  filial: string;
-  nomeMaquina: string;
-  macAddress: string;
-  processadorCPU: string;
-  memoriaRAM: string;
-  armazenamento: string;
-  sistemaOperacional: string;
-  isCaixa: boolean;
-  pdc?: string;
-  status: 'Ativo' | 'Em Manutenção' | 'Desativado' | 'Em Estoque';
-  location: string;
-  assignedUser?: string;
-  acquisitionDate: string;
-}
+import { useSupabaseData } from '@/hooks/useSupabaseData';
 
 interface MovementRecord {
   id: string;
@@ -28,54 +13,6 @@ interface MovementRecord {
   description: string;
   type: 'maintenance' | 'transfer' | 'upgrade' | 'other';
 }
-
-const mockEquipments: Equipment[] = [
-  {
-    id: '1',
-    filial: 'MB001',
-    nomeMaquina: 'Desktop-001',
-    macAddress: '00:11:22:33:44:55',
-    processadorCPU: 'Intel Core i5-12400',
-    memoriaRAM: '8GB DDR4',
-    armazenamento: 'SSD 256GB',
-    sistemaOperacional: 'Windows 11',
-    isCaixa: false,
-    status: 'Ativo',
-    location: 'TI',
-    assignedUser: 'João Silva',
-    acquisitionDate: '2023-01-15'
-  },
-  {
-    id: '2',
-    filial: 'MB001',
-    nomeMaquina: 'Caixa-001',
-    macAddress: '00:11:22:33:44:66',
-    processadorCPU: 'Intel Core i3-10100',
-    memoriaRAM: '4GB DDR4',
-    armazenamento: 'SSD 128GB',
-    sistemaOperacional: 'Windows 10',
-    isCaixa: true,
-    pdc: 'PDC Principal - Configuração especial para vendas',
-    status: 'Ativo',
-    location: 'Vendas',
-    assignedUser: 'Maria Santos',
-    acquisitionDate: '2023-02-20'
-  },
-  {
-    id: '3',
-    filial: 'MB002',
-    nomeMaquina: 'Desktop-002',
-    macAddress: '00:11:22:33:44:77',
-    processadorCPU: 'AMD Ryzen 5 5600G',
-    memoriaRAM: '16GB DDR4',
-    armazenamento: 'SSD 512GB',
-    sistemaOperacional: 'Linux Ubuntu',
-    isCaixa: false,
-    status: 'Em Manutenção',
-    location: 'Administrativo',
-    acquisitionDate: '2023-03-10'
-  }
-];
 
 const mockMovements: { [key: string]: MovementRecord[] } = {
   '1': [
@@ -97,79 +34,51 @@ const mockMovements: { [key: string]: MovementRecord[] } = {
       description: 'Trocado memória RAM de 4GB para 8GB',
       type: 'upgrade'
     }
-  ],
-  '2': [
-    {
-      id: '4',
-      date: '2024-01-20T11:00:00Z',
-      description: 'Configuração inicial do PDC',
-      type: 'other'
-    },
-    {
-      id: '5',
-      date: '2024-02-25T16:45:00Z',
-      description: 'Manutenção preventiva - Limpeza interna',
-      type: 'maintenance'
-    }
-  ],
-  '3': [
-    {
-      id: '6',
-      date: '2024-03-12T13:30:00Z',
-      description: 'Diagnóstico de problema na placa mãe',
-      type: 'maintenance'
-    }
   ]
 };
 
 export const Equipamentos: React.FC = () => {
-  const [equipments, setEquipments] = useState<Equipment[]>(mockEquipments);
+  const { equipments, loading } = useSupabaseData();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [showInactive, setShowInactive] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [selectedEquipmentId, setSelectedEquipmentId] = useState<string | null>(null);
-  const [editingEquipment, setEditingEquipment] = useState<Equipment | null>(null);
+  const [editingEquipment, setEditingEquipment] = useState<any>(null);
 
   const filteredEquipments = equipments.filter(equipment => {
     const matchesSearch = 
-      equipment.nomeMaquina.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      equipment.macAddress.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      equipment.filial.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      equipment.processadorCPU.toLowerCase().includes(searchTerm.toLowerCase());
+      equipment.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      equipment.serial_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      equipment.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      equipment.model?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === '' || equipment.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    const isActive = equipment.status !== 'desativado';
+    const shouldShow = showInactive || isActive;
+    return matchesSearch && matchesStatus && shouldShow;
   });
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Ativo': return 'bg-green-100 text-green-800';
-      case 'Em Manutenção': return 'bg-yellow-100 text-yellow-800';
-      case 'Desativado': return 'bg-red-100 text-red-800';
-      case 'Em Estoque': return 'bg-gray-100 text-gray-800';
+      case 'ativo': return 'bg-green-100 text-green-800';
+      case 'manutencao': return 'bg-yellow-100 text-yellow-800';
+      case 'desativado': return 'bg-red-100 text-red-800';
+      case 'estoque': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
   const handleAddEquipment = (data: any) => {
-    const newEquipment: Equipment = {
-      id: Date.now().toString(),
-      ...data,
-      status: 'Em Estoque' as const,
-      location: 'Estoque',
-      acquisitionDate: new Date().toISOString().split('T')[0]
-    };
-    setEquipments([...equipments, newEquipment]);
+    // Equipment creation is handled by the EquipmentForm component
+    setShowForm(false);
   };
 
-  const handleEditEquipment = (equipment: Equipment) => {
+  const handleEditEquipment = (equipment: any) => {
     setEditingEquipment(equipment);
   };
 
-  const handleSaveEquipment = (updatedEquipment: Equipment) => {
-    setEquipments(prev => prev.map(eq => 
-      eq.id === updatedEquipment.id ? updatedEquipment : eq
-    ));
+  const handleSaveEquipment = (updatedEquipment: any) => {
     setEditingEquipment(null);
   };
 
@@ -185,11 +94,19 @@ export const Equipamentos: React.FC = () => {
     ? mockMovements[selectedEquipmentId] || []
     : [];
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Equipamentos</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Equipamentos</h1>
           <p className="text-gray-600 mt-2">Gerencie todos os ativos de TI</p>
         </div>
         <button 
@@ -201,13 +118,13 @@ export const Equipamentos: React.FC = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
             <input
               type="text"
-              placeholder="Buscar por nome, MAC, filial..."
+              placeholder="Buscar por nome, serial, marca..."
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -219,14 +136,27 @@ export const Equipamentos: React.FC = () => {
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <option value="">Todos os Status</option>
-            <option value="Ativo">Ativo</option>
-            <option value="Em Manutenção">Em Manutenção</option>
-            <option value="Desativado">Desativado</option>
-            <option value="Em Estoque">Em Estoque</option>
+            <option value="ativo">Ativo</option>
+            <option value="manutencao">Em Manutenção</option>
+            <option value="desativado">Desativado</option>
+            <option value="estoque">Em Estoque</option>
           </select>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="showInactive"
+              checked={showInactive}
+              onChange={(e) => setShowInactive(e.target.checked)}
+              className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+            />
+            <label htmlFor="showInactive" className="text-sm text-gray-700 flex items-center gap-1">
+              {showInactive ? <Eye size={16} /> : <EyeOff size={16} />}
+              Mostrar Desativados
+            </label>
+          </div>
           <button 
             onClick={() => setShowReportModal(true)}
-            className="bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2"
+            className="bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2 justify-center"
           >
             <FileText size={16} />
             Gerar Relatório
@@ -235,61 +165,47 @@ export const Equipamentos: React.FC = () => {
       </div>
 
       {/* Equipment Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
         {filteredEquipments.map((equipment) => (
-          <div key={equipment.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+          <div key={equipment.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 hover:shadow-md transition-shadow">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg ${equipment.isCaixa ? 'bg-red-100' : 'bg-blue-100'}`}>
-                  <Monitor className={equipment.isCaixa ? 'text-red-600' : 'text-blue-600'} size={20} />
+                <div className="p-2 rounded-lg bg-blue-100">
+                  <Monitor className="text-blue-600" size={20} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">{equipment.nomeMaquina}</h3>
+                  <h3 className="font-semibold text-gray-900">{equipment.name}</h3>
                   <p className="text-sm text-gray-600">
-                    {equipment.filial} - {equipment.isCaixa ? 'Caixa' : 'Equipamento'}
+                    {equipment.brand} - {equipment.type}
                   </p>
                 </div>
               </div>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(equipment.status)}`}>
-                {equipment.status}
+              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(equipment.status || 'ativo')}`}>
+                {equipment.status === 'ativo' ? 'Ativo' : 
+                 equipment.status === 'manutencao' ? 'Em Manutenção' :
+                 equipment.status === 'desativado' ? 'Desativado' :
+                 equipment.status === 'estoque' ? 'Em Estoque' : 
+                 equipment.status}
               </span>
             </div>
 
             <div className="space-y-2 mb-4">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">MAC:</span>
-                <span className="text-gray-900 font-medium">{equipment.macAddress}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">CPU:</span>
-                <span className="text-gray-900 font-medium">{equipment.processadorCPU}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">RAM:</span>
-                <span className="text-gray-900 font-medium">{equipment.memoriaRAM}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Armazenamento:</span>
-                <span className="text-gray-900 font-medium">{equipment.armazenamento}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Sistema:</span>
-                <span className="text-gray-900 font-medium">{equipment.sistemaOperacional}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Localização:</span>
-                <span className="text-gray-900 font-medium">{equipment.location}</span>
-              </div>
-              {equipment.assignedUser && (
+              {equipment.serial_number && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Usuário:</span>
-                  <span className="text-gray-900 font-medium">{equipment.assignedUser}</span>
+                  <span className="text-gray-600">Serial:</span>
+                  <span className="text-gray-900 font-medium">{equipment.serial_number}</span>
                 </div>
               )}
-              {equipment.isCaixa && equipment.pdc && (
-                <div className="text-sm">
-                  <span className="text-gray-600">PDC:</span>
-                  <p className="text-gray-900 font-medium mt-1">{equipment.pdc}</p>
+              {equipment.model && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Modelo:</span>
+                  <span className="text-gray-900 font-medium">{equipment.model}</span>
+                </div>
+              )}
+              {equipment.location && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Localização:</span>
+                  <span className="text-gray-900 font-medium">{equipment.location}</span>
                 </div>
               )}
             </div>
@@ -300,14 +216,15 @@ export const Equipamentos: React.FC = () => {
                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 <Settings size={14} />
-                <span>Editar</span>
+                <span className="hidden sm:inline">Editar</span>
               </button>
               <button 
                 onClick={() => handleShowMovements(equipment.id)}
                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <ArrowRight size={14} />
-                <span>Movimentar</span>
+                <History size={14} />
+                <span className="hidden sm:inline">Histórico de Movimentação</span>
+                <span className="sm:hidden">Histórico</span>
               </button>
             </div>
           </div>
@@ -315,7 +232,7 @@ export const Equipamentos: React.FC = () => {
       </div>
 
       {filteredEquipments.length === 0 && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 sm:p-12 text-center">
           <Monitor className="mx-auto text-gray-400 mb-4" size={48} />
           <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum equipamento encontrado</h3>
           <p className="text-gray-600">Tente ajustar os filtros ou adicione um novo equipamento</p>
@@ -339,7 +256,7 @@ export const Equipamentos: React.FC = () => {
       {selectedEquipmentId && selectedEquipment && (
         <MovementHistoryModal
           onClose={() => setSelectedEquipmentId(null)}
-          equipmentName={selectedEquipment.nomeMaquina}
+          equipmentName={selectedEquipment.name}
           movements={selectedMovements}
         />
       )}

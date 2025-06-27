@@ -69,6 +69,44 @@ export type Database = {
           },
         ]
       }
+      maintenance_logs: {
+        Row: {
+          changed_by: string
+          created_at: string
+          field_changed: string
+          id: string
+          maintenance_id: string
+          new_value: string | null
+          old_value: string | null
+        }
+        Insert: {
+          changed_by: string
+          created_at?: string
+          field_changed: string
+          id?: string
+          maintenance_id: string
+          new_value?: string | null
+          old_value?: string | null
+        }
+        Update: {
+          changed_by?: string
+          created_at?: string
+          field_changed?: string
+          id?: string
+          maintenance_id?: string
+          new_value?: string | null
+          old_value?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_logs_maintenance_id_fkey"
+            columns: ["maintenance_id"]
+            isOneToOne: false
+            referencedRelation: "maintenances"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       maintenances: {
         Row: {
           completed_at: string | null
@@ -242,6 +280,44 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      support_ticket_logs: {
+        Row: {
+          changed_by: string
+          created_at: string
+          field_changed: string
+          id: string
+          new_value: string | null
+          old_value: string | null
+          ticket_id: string
+        }
+        Insert: {
+          changed_by: string
+          created_at?: string
+          field_changed: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          ticket_id: string
+        }
+        Update: {
+          changed_by?: string
+          created_at?: string
+          field_changed?: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_ticket_logs_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       support_tickets: {
         Row: {

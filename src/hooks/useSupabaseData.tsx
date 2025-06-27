@@ -251,6 +251,32 @@ export const useSupabaseData = () => {
     }
   };
 
+  const updateMaintenance = async (id: string, updates: Database['public']['Tables']['maintenances']['Update']) => {
+    try {
+      const { data, error } = await supabase
+        .from('maintenances')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      setMaintenances(prev => prev.map(maintenance => maintenance.id === id ? data : maintenance));
+      toast({
+        title: "Manutenção atualizada",
+        description: "Manutenção modificada com sucesso",
+      });
+      return data;
+    } catch (error: any) {
+      toast({
+        title: "Erro ao atualizar manutenção",
+        description: error.message,
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
+
   useEffect(() => {
     if (user) {
       fetchEquipments();
@@ -276,5 +302,6 @@ export const useSupabaseData = () => {
     maintenances,
     fetchMaintenances,
     createMaintenance,
+    updateMaintenance,
   };
 };
