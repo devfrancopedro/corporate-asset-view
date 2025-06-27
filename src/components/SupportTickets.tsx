@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Ticket, Plus, Clock, CheckCircle, Camera, BarChart3 } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -45,7 +44,6 @@ export const SupportTickets: React.FC = () => {
         description: formData.description,
         priority: formData.priority,
         category: formData.category,
-        status: 'pendente',
       });
 
       // Reset form
@@ -296,12 +294,12 @@ export const SupportTickets: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(ticket.priority)}`}>
-                    {ticket.priority.toUpperCase()}
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(ticket.priority || 'media')}`}>
+                    {(ticket.priority || 'media').toUpperCase()}
                   </span>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${getStatusColor(ticket.status)}`}>
-                    {ticket.status === 'pendente' ? <Clock size={12} /> : <CheckCircle size={12} />}
-                    {getStatusLabel(ticket.status)}
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${getStatusColor(ticket.status || 'pendente')}`}>
+                    {(ticket.status || 'pendente') === 'pendente' ? <Clock size={12} /> : <CheckCircle size={12} />}
+                    {getStatusLabel(ticket.status || 'pendente')}
                   </span>
                 </div>
               </div>
