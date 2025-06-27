@@ -3,55 +3,15 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { useToast } from '@/hooks/use-toast';
+import type { Database } from '@/integrations/supabase/types';
 
-export interface Equipment {
-  id: string;
-  name: string;
-  brand?: string;
-  model?: string;
-  serial_number?: string;
-  type: 'desktop' | 'notebook' | 'servidor' | 'impressora' | 'monitor' | 'outro';
-  status: 'ativo' | 'inativo' | 'manutencao' | 'descartado';
-  location?: string;
-  user_id?: string;
-  created_by: string;
-  created_at: string;
-  updated_at: string;
-}
+// Use the database types from Supabase
+type Equipment = Database['public']['Tables']['equipments']['Row'];
+type SupportTicket = Database['public']['Tables']['support_tickets']['Row'];
+type Maintenance = Database['public']['Tables']['maintenances']['Row'];
 
-export interface SupportTicket {
-  id: string;
-  title: string;
-  description?: string;
-  status: 'pendente' | 'em_andamento' | 'finalizado' | 'cancelado';
-  priority: 'baixa' | 'media' | 'alta' | 'critica';
-  category: string;
-  equipment_id?: string;
-  created_by: string;
-  assigned_to?: string;
-  created_at: string;
-  updated_at: string;
-  completed_at?: string;
-}
-
-export interface Maintenance {
-  id: string;
-  equipment_id: string;
-  title: string;
-  description?: string;
-  type: 'preventiva' | 'corretiva' | 'upgrade';
-  status: 'pendente' | 'em_andamento' | 'concluida' | 'cancelada';
-  priority: 'baixa' | 'media' | 'alta' | 'critica';
-  technician_id?: string;
-  requested_by: string;
-  scheduled_date?: string;
-  started_at?: string;
-  completed_at?: string;
-  cost?: number;
-  notes?: string;
-  created_at: string;
-  updated_at: string;
-}
+// Export the types for use in other components
+export type { Equipment, SupportTicket, Maintenance };
 
 export const useSupabaseData = () => {
   const { user } = useAuth();
@@ -83,7 +43,7 @@ export const useSupabaseData = () => {
     }
   };
 
-  const createEquipment = async (equipment: Omit<Equipment, 'id' | 'created_at' | 'updated_at' | 'created_by'>) => {
+  const createEquipment = async (equipment: Database['public']['Tables']['equipments']['Insert']) => {
     if (!user) return;
     try {
       const { data, error } = await supabase
@@ -109,7 +69,7 @@ export const useSupabaseData = () => {
     }
   };
 
-  const updateEquipment = async (id: string, updates: Partial<Equipment>) => {
+  const updateEquipment = async (id: string, updates: Database['public']['Tables']['equipments']['Update']) => {
     try {
       const { data, error } = await supabase
         .from('equipments')
@@ -183,7 +143,7 @@ export const useSupabaseData = () => {
     }
   };
 
-  const createSupportTicket = async (ticket: Omit<SupportTicket, 'id' | 'created_at' | 'updated_at' | 'created_by'>) => {
+  const createSupportTicket = async (ticket: Database['public']['Tables']['support_tickets']['Insert']) => {
     if (!user) return;
     try {
       const { data, error } = await supabase
@@ -209,7 +169,7 @@ export const useSupabaseData = () => {
     }
   };
 
-  const updateSupportTicket = async (id: string, updates: Partial<SupportTicket>) => {
+  const updateSupportTicket = async (id: string, updates: Database['public']['Tables']['support_tickets']['Update']) => {
     try {
       const { data, error } = await supabase
         .from('support_tickets')
@@ -260,7 +220,7 @@ export const useSupabaseData = () => {
     }
   };
 
-  const createMaintenance = async (maintenance: Omit<Maintenance, 'id' | 'created_at' | 'updated_at' | 'requested_by'>) => {
+  const createMaintenance = async (maintenance: Database['public']['Tables']['maintenances']['Insert']) => {
     if (!user) return;
     try {
       const { data, error } = await supabase
