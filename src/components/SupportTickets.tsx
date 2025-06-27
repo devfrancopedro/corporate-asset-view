@@ -1,68 +1,10 @@
 
 import React, { useState } from 'react';
-import { Ticket, Plus, Clock, CheckCircle, Camera, BarChart3, Calendar } from 'lucide-react';
+import { Ticket, Plus, Clock, CheckCircle, Camera, BarChart3 } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { NewTicketForm } from './NewTicketForm';
+import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useToast } from '@/hooks/use-toast';
-
-interface SupportTicket {
-  id: string;
-  title: string;
-  description: string;
-  status: 'pendente' | 'finalizado';
-  priority: 'baixa' | 'media' | 'alta' | 'critica';
-  createdDate: string;
-  completedDate?: string;
-  technician: string;
-  category: string;
-  logs: string[];
-  photos: string[];
-  timeToCompletion?: number; // em horas
-}
-
-const mockTickets: SupportTicket[] = [
-  {
-    id: '1',
-    title: 'Problema na impressora do RH',
-    description: 'Impressora não está conectando à rede',
-    status: 'finalizado',
-    priority: 'media',
-    createdDate: '2024-01-15T09:00:00Z',
-    completedDate: '2024-01-15T14:30:00Z',
-    technician: 'João Silva',
-    category: 'Hardware',
-    logs: ['Verificado cabo de rede', 'Reinstalado drivers', 'Problema resolvido'],
-    photos: [],
-    timeToCompletion: 5.5
-  },
-  {
-    id: '2',
-    title: 'Sistema lento no computador da contabilidade',
-    description: 'Performance muito baixa, travamentos frequentes',
-    status: 'pendente',
-    priority: 'alta',
-    createdDate: '2024-01-20T11:15:00Z',
-    technician: 'João Silva',
-    category: 'Software',
-    logs: ['Verificado uso de CPU - 98%', 'Identificado malware', 'Iniciando limpeza'],
-    photos: []
-  },
-  {
-    id: '3',
-    title: 'Email não funciona',
-    description: 'Usuário não consegue enviar emails',
-    status: 'finalizado',
-    priority: 'baixa',
-    createdDate: '2024-01-18T16:20:00Z',
-    completedDate: '2024-01-19T10:00:00Z',
-    technician: 'João Silva',
-    category: 'Email',
-    logs: ['Verificado configurações SMTP', 'Atualizadas configurações', 'Testado envio'],
-    photos: [],
-    timeToCompletion: 17.5
-  }
-];
 
 const chartConfig = {
   tickets: {
@@ -74,49 +16,67 @@ const chartConfig = {
 };
 
 export const SupportTickets: React.FC = () => {
-  const [tickets, setTickets] = useState<SupportTicket[]>(mockTickets);
+  const { supportTickets, createSupportTicket, updateSupportTicket, loading } = useSupabaseData();
   const [showForm, setShowForm] = useState(false);
-  const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(null);
   const { toast } = useToast();
 
-  const handleNewTicket = (newTicket: SupportTicket) => {
-    setTickets(prev => [newTicket, ...prev]);
-    setShowForm(false);
-    toast({
-      title: "Chamado criado",
-      description: "Novo chamado foi registrado com sucesso",
-    });
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    priority: 'media' as const,
+    category: '',
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.title.trim() || !formData.description.trim() || !formData.category.trim()) {
+      toast({
+        title: "Erro",
+        description: "Por favor, preencha todos os campos obrigatórios",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await createSupportTicket({
+        title: formData.title,
+        description: formData.description,
+        priority: formData.priority,
+        category: formData.category,
+        status: 'pendente',
+      });
+
+      // Reset form
+      setFormData({
+        title: '',
+        description: '',
+        priority: 'media',
+        category: '',
+      });
+      setShowForm(false);
+    } catch (error) {
+      // Error handled in hook
+    }
   };
 
-  const handleUpdateTicket = (ticketId: string, updates: Partial<SupportTicket>) => {
-    setTickets(prev => prev.map(ticket => 
-      ticket.id === ticketId ? { ...ticket, ...updates } : ticket
-    ));
-  };
+  const completedTickets = supportTickets.filter(t => t.status === 'finalizado');
+  const pendingTickets = supportTickets.filter(t => t.status === 'pendente');
+  const inProgressTickets = supportTickets.filter(t => t.status === 'em_andamento');
 
-  const completedTickets = tickets.filter(t => t.status === 'finalizado');
-  const pendingTickets = tickets.filter(t => t.status === 'pendente');
-
-  // Dados para gráfico de tempo de resolução
-  const timeData = completedTickets
-    .filter(t => t.timeToCompletion)
-    .map(t => ({
-      name: t.title.substring(0, 20) + '...',
-      time: t.timeToCompletion
-    }));
-
-  // Dados para gráfico mensal
+  // Dados para gráfico mensal (simulado - baseado nos chamados existentes)
   const monthlyData = [
-    { month: 'Jan', total: 15, completed: 12 },
-    { month: 'Fev', total: 20, completed: 18 },
-    { month: 'Mar', total: 25, completed: 23 },
-    { month: 'Abr', total: 18, completed: 16 },
-    { month: 'Mai', total: 22, completed: 20 },
-    { month: 'Jun', total: 28, completed: 25 }
+    { month: 'Jan', total: supportTickets.length, completed: completedTickets.length },
   ];
 
   const getStatusColor = (status: string) => {
-    return status === 'pendente' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800';
+    switch (status) {
+      case 'pendente': return 'bg-yellow-100 text-yellow-800';
+      case 'em_andamento': return 'bg-blue-100 text-blue-800';
+      case 'finalizado': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
   };
 
   const getPriorityColor = (priority: string) => {
@@ -129,12 +89,30 @@ export const SupportTickets: React.FC = () => {
     }
   };
 
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'pendente': return 'Pendente';
+      case 'em_andamento': return 'Em Andamento';
+      case 'finalizado': return 'Finalizado';
+      case 'cancelado': return 'Cancelado';
+      default: return status;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Suporte de TI</h1>
-          <p className="text-gray-600 mt-2">Gerencie chamados e acompanhe métricas de atendimento</p>
+          <h1 className="text-3xl font-bold text-gray-900">Meus Chamados de Suporte</h1>
+          <p className="text-gray-600 mt-2">Gerencie seus chamados e acompanhe o progresso</p>
         </div>
         <button 
           onClick={() => setShowForm(!showForm)}
@@ -147,7 +125,89 @@ export const SupportTickets: React.FC = () => {
 
       {/* Novo formulário de chamado */}
       {showForm && (
-        <NewTicketForm onSubmit={handleNewTicket} />
+        <div className="card-minimal p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Novo Chamado de Suporte</h3>
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Título do Chamado *
+                </label>
+                <input
+                  type="text"
+                  className="w-full input-minimal p-3 border border-gray-300 focus:border-gray-500 focus:ring-gray-500"
+                  value={formData.title}
+                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                  placeholder="Descreva brevemente o problema"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Categoria *
+                </label>
+                <select
+                  className="w-full input-minimal p-3 border border-gray-300 focus:border-gray-500 focus:ring-gray-500"
+                  value={formData.category}
+                  onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                  required
+                >
+                  <option value="">Selecione uma categoria</option>
+                  <option value="Hardware">Hardware</option>
+                  <option value="Software">Software</option>
+                  <option value="Rede">Rede</option>
+                  <option value="Email">Email</option>
+                  <option value="Impressora">Impressora</option>
+                  <option value="Sistema Operacional">Sistema Operacional</option>
+                  <option value="Segurança">Segurança</option>
+                  <option value="Backup">Backup</option>
+                  <option value="Outro">Outro</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Prioridade
+                </label>
+                <select
+                  className="w-full input-minimal p-3 border border-gray-300 focus:border-gray-500 focus:ring-gray-500"
+                  value={formData.priority}
+                  onChange={(e) => setFormData(prev => ({ ...prev, priority: e.target.value as any }))}
+                >
+                  <option value="baixa">Baixa</option>
+                  <option value="media">Média</option>
+                  <option value="alta">Alta</option>
+                  <option value="critica">Crítica</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Descrição Detalhada *
+              </label>
+              <textarea
+                className="w-full input-minimal p-3 border border-gray-300 focus:border-gray-500 focus:ring-gray-500"
+                rows={4}
+                value={formData.description}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Descreva o problema em detalhes, incluindo quando ocorreu, frequência, mensagens de erro, etc."
+                required
+              />
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <button
+                type="submit"
+                className="btn-minimal bg-primary text-white hover:bg-primary/90"
+              >
+                Criar Chamado
+              </button>
+            </div>
+          </form>
+        </div>
       )}
 
       {/* Cards de estatísticas */}
@@ -156,7 +216,7 @@ export const SupportTickets: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Total de Chamados</p>
-              <p className="text-2xl font-bold text-gray-900 mt-2">{tickets.length}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-2">{supportTickets.length}</p>
             </div>
             <div className="p-3 rounded-minimal bg-gray-100">
               <Ticket className="text-gray-600" size={24} />
@@ -179,6 +239,18 @@ export const SupportTickets: React.FC = () => {
         <div className="card-minimal p-6">
           <div className="flex items-center justify-between">
             <div>
+              <p className="text-sm font-medium text-gray-600">Em Andamento</p>
+              <p className="text-2xl font-bold text-blue-600 mt-2">{inProgressTickets.length}</p>
+            </div>
+            <div className="p-3 rounded-minimal bg-blue-100">
+              <BarChart3 className="text-blue-600" size={24} />
+            </div>
+          </div>
+        </div>
+
+        <div className="card-minimal p-6">
+          <div className="flex items-center justify-between">
+            <div>
               <p className="text-sm font-medium text-gray-600">Finalizados</p>
               <p className="text-2xl font-bold text-green-600 mt-2">{completedTickets.length}</p>
             </div>
@@ -187,65 +259,31 @@ export const SupportTickets: React.FC = () => {
             </div>
           </div>
         </div>
-
-        <div className="card-minimal p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Tempo Médio</p>
-              <p className="text-2xl font-bold text-blue-600 mt-2">
-                {completedTickets.length > 0 
-                  ? `${(completedTickets.reduce((acc, t) => acc + (t.timeToCompletion || 0), 0) / completedTickets.length).toFixed(1)}h`
-                  : '0h'
-                }
-              </p>
-            </div>
-            <div className="p-3 rounded-minimal bg-blue-100">
-              <BarChart3 className="text-blue-600" size={24} />
-            </div>
-          </div>
-        </div>
       </div>
 
-      {/* Gráficos */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="card-minimal p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Tempo de Resolução</h3>
-          <ChartContainer config={chartConfig} className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={timeData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="time" fill="#808080" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartContainer>
-        </div>
-
-        <div className="card-minimal p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Chamados por Mês</h3>
-          <ChartContainer config={chartConfig} className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={monthlyData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Line type="monotone" dataKey="total" stroke="#808080" strokeWidth={3} />
-                <Line type="monotone" dataKey="completed" stroke="#a0a0a0" strokeWidth={3} />
-              </LineChart>
-            </ResponsiveContainer>
-          </ChartContainer>
-        </div>
+      {/* Gráfico */}
+      <div className="card-minimal p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Chamados por Mês</h3>
+        <ChartContainer config={chartConfig} className="h-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={monthlyData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Line type="monotone" dataKey="total" stroke="#808080" strokeWidth={3} />
+              <Line type="monotone" dataKey="completed" stroke="#a0a0a0" strokeWidth={3} />
+            </LineChart>
+          </ResponsiveContainer>
+        </ChartContainer>
       </div>
 
       {/* Lista de chamados */}
       <div className="card-minimal p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Chamados Recentes</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Meus Chamados</h2>
         
         <div className="space-y-4">
-          {tickets.map((ticket) => (
+          {supportTickets.map((ticket) => (
             <div key={ticket.id} className="border border-gray-200 rounded-minimal p-4 hover:shadow-sm transition-shadow">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
@@ -263,30 +301,9 @@ export const SupportTickets: React.FC = () => {
                   </span>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${getStatusColor(ticket.status)}`}>
                     {ticket.status === 'pendente' ? <Clock size={12} /> : <CheckCircle size={12} />}
-                    {ticket.status === 'pendente' ? 'Pendente' : 'Finalizado'}
+                    {getStatusLabel(ticket.status)}
                   </span>
                 </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
-                <div>
-                  <span className="text-sm text-gray-600">Técnico:</span>
-                  <p className="text-sm font-medium text-gray-900">{ticket.technician}</p>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-600">Criado em:</span>
-                  <p className="text-sm font-medium text-gray-900">
-                    {new Date(ticket.createdDate).toLocaleDateString('pt-BR')}
-                  </p>
-                </div>
-                {ticket.completedDate && (
-                  <div>
-                    <span className="text-sm text-gray-600">Finalizado em:</span>
-                    <p className="text-sm font-medium text-gray-900">
-                      {new Date(ticket.completedDate).toLocaleDateString('pt-BR')}
-                    </p>
-                  </div>
-                )}
               </div>
 
               <div className="mb-3">
@@ -294,44 +311,18 @@ export const SupportTickets: React.FC = () => {
                 <p className="text-sm text-gray-900 mt-1">{ticket.description}</p>
               </div>
 
-              {ticket.logs.length > 0 && (
-                <div className="mb-3">
-                  <span className="text-sm text-gray-600">Logs:</span>
-                  <ul className="text-sm text-gray-900 mt-1 space-y-1">
-                    {ticket.logs.map((log, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <span className="text-gray-400">•</span>
-                        <span>{log}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  {ticket.photos.length > 0 && (
-                    <span className="flex items-center gap-1 text-sm text-gray-600">
-                      <Camera size={14} />
-                      {ticket.photos.length} foto(s)
-                    </span>
-                  )}
-                </div>
-                <button 
-                  onClick={() => setSelectedTicket(ticket)}
-                  className="text-sm text-primary hover:text-primary/80 font-medium"
-                >
-                  Ver detalhes
-                </button>
+              <div className="text-sm text-gray-600">
+                Criado em: {new Date(ticket.created_at).toLocaleDateString('pt-BR')}
               </div>
             </div>
           ))}
         </div>
 
-        {tickets.length === 0 && (
+        {supportTickets.length === 0 && (
           <div className="text-center py-8 text-gray-500">
             <Ticket className="mx-auto mb-4 text-gray-400" size={48} />
             <p>Nenhum chamado registrado</p>
+            <p className="text-sm mt-1">Clique em "Novo Chamado" para criar seu primeiro chamado</p>
           </div>
         )}
       </div>
