@@ -103,7 +103,7 @@ export const Equipamentos: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 p-4 sm:p-6">
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Equipamentos</h1>
@@ -111,7 +111,7 @@ export const Equipamentos: React.FC = () => {
         </div>
         <button 
           onClick={() => setShowForm(true)}
-          className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+          className="w-full sm:w-auto bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
         >
           Adicionar Equipamento
         </button>
@@ -156,7 +156,7 @@ export const Equipamentos: React.FC = () => {
           </div>
           <button 
             onClick={() => setShowReportModal(true)}
-            className="bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2 justify-center"
+            className="w-full sm:w-auto bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent/90 transition-colors flex items-center gap-2 justify-center"
           >
             <FileText size={16} />
             Gerar Relatório
@@ -249,7 +249,7 @@ export const Equipamentos: React.FC = () => {
       {showReportModal && (
         <ReportModal
           onClose={() => setShowReportModal(false)}
-          equipments={equipments}
+          equipments={filteredEquipments}
         />
       )}
 

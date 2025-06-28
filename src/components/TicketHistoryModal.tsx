@@ -40,18 +40,22 @@ export const TicketHistoryModal: React.FC<TicketHistoryModalProps> = ({
       
       const { data, error } = await supabase
         .from(tableName)
-        .select(`
-          *,
-          profiles!${tableName}_changed_by_fkey(full_name)
-        `)
+        .select('*')
         .eq(idField, ticketId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
+      // Buscar informações dos usuários separadamente
+      const userIds = [...new Set(data?.map(log => log.changed_by) || [])];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', userIds);
+
       const formattedHistory = data?.map(log => ({
         ...log,
-        user_name: log.profiles?.full_name || 'Usuário desconhecido'
+        user_name: profiles?.find(p => p.id === log.changed_by)?.full_name || 'Usuário desconhecido'
       })) || [];
 
       setHistory(formattedHistory);

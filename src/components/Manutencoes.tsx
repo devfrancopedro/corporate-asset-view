@@ -81,7 +81,7 @@ export const Manutencoes: React.FC = () => {
 
   return (
     <>
-      <div className="space-y-6 p-4 sm:p-6">
+      <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Manutenções</h1>
@@ -89,7 +89,7 @@ export const Manutencoes: React.FC = () => {
           </div>
           <button 
             onClick={() => setShowForm(!showForm)}
-            className="btn-minimal bg-primary text-white hover:bg-primary/90 flex items-center gap-2 justify-center"
+            className="w-full sm:w-auto btn-minimal bg-primary text-white hover:bg-primary/90 flex items-center gap-2 justify-center"
           >
             <Plus size={16} />
             {showForm ? 'Cancelar' : 'Nova Manutenção'}
@@ -110,7 +110,7 @@ export const Manutencoes: React.FC = () => {
                 <p className="text-xl sm:text-2xl font-bold text-yellow-600 mt-2">{pendingCount}</p>
               </div>
               <div className="p-3 rounded-minimal bg-yellow-100">
-                <Clock className="text-yellow-600" size={20} sm:size={24} />
+                <Clock className="text-yellow-600" size={24} />
               </div>
             </div>
           </div>
@@ -122,7 +122,7 @@ export const Manutencoes: React.FC = () => {
                 <p className="text-xl sm:text-2xl font-bold text-blue-600 mt-2">{inProgressCount}</p>
               </div>
               <div className="p-3 rounded-minimal bg-blue-100">
-                <Wrench className="text-blue-600" size={20} sm:size={24} />
+                <Wrench className="text-blue-600" size={24} />
               </div>
             </div>
           </div>
@@ -134,7 +134,7 @@ export const Manutencoes: React.FC = () => {
                 <p className="text-xl sm:text-2xl font-bold text-green-600 mt-2">{completedCount}</p>
               </div>
               <div className="p-3 rounded-minimal bg-green-100">
-                <CheckCircle className="text-green-600" size={20} sm:size={24} />
+                <CheckCircle className="text-green-600" size={24} />
               </div>
             </div>
           </div>
