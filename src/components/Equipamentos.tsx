@@ -249,7 +249,20 @@ export const Equipamentos: React.FC = () => {
       {showReportModal && (
         <ReportModal
           onClose={() => setShowReportModal(false)}
-          equipments={filteredEquipments}
+          equipments={filteredEquipments.map(eq => ({
+            id: eq.id,
+            name: eq.name,
+            brand: eq.brand || '',
+            model: eq.model || '',
+            serial_number: eq.serial_number || '',
+            status: eq.status || 'ativo',
+            location: eq.location || '',
+            type: eq.type,
+            created_at: eq.created_at,
+            updated_at: eq.updated_at,
+            created_by: eq.created_by,
+            user_id: eq.user_id
+          }))}
         />
       )}
 
