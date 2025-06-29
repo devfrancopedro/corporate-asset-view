@@ -251,17 +251,17 @@ export const Equipamentos: React.FC = () => {
           onClose={() => setShowReportModal(false)}
           equipments={filteredEquipments.map(eq => ({
             id: eq.id,
-            name: eq.name,
-            brand: eq.brand || '',
-            model: eq.model || '',
-            serial_number: eq.serial_number || '',
+            filial: eq.location || 'Sem filial',
+            nomeMaquina: eq.name,
+            macAddress: eq.serial_number || '',
+            processadorCPU: `${eq.brand} ${eq.model}` || 'N/A',
+            memoriaRAM: '8GB', // Mock data
+            armazenamento: '256GB', // Mock data
+            isCaixa: eq.type === 'desktop' || eq.type === 'workstation',
+            pdc: eq.location || '',
             status: eq.status || 'ativo',
             location: eq.location || '',
-            type: eq.type,
-            created_at: eq.created_at,
-            updated_at: eq.updated_at,
-            created_by: eq.created_by,
-            user_id: eq.user_id
+            assignedUser: 'N/A'
           }))}
         />
       )}

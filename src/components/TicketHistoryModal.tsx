@@ -38,25 +38,37 @@ export const TicketHistoryModal: React.FC<TicketHistoryModalProps> = ({
       const tableName = type === 'support' ? 'support_ticket_logs' : 'maintenance_logs';
       const idField = type === 'support' ? 'ticket_id' : 'maintenance_id';
       
-      const { data, error } = await supabase
+      // First, get the logs
+      const { data: logs, error: logsError } = await supabase
         .from(tableName)
         .select('*')
         .eq(idField, ticketId)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (logsError) throw logsError;
 
-      // Buscar informações dos usuários separadamente
-      const userIds = [...new Set(data?.map(log => log.changed_by) || [])];
-      const { data: profiles } = await supabase
+      if (!logs || logs.length === 0) {
+        setHistory([]);
+        setLoading(false);
+        return;
+      }
+
+      // Then, get user profiles separately
+      const userIds = [...new Set(logs.map(log => log.changed_by))];
+      const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('id, full_name')
         .in('id', userIds);
 
-      const formattedHistory = data?.map(log => ({
+      if (profilesError) {
+        console.error('Error fetching profiles:', profilesError);
+      }
+
+      // Map the logs with user names
+      const formattedHistory = logs.map(log => ({
         ...log,
         user_name: profiles?.find(p => p.id === log.changed_by)?.full_name || 'Usuário desconhecido'
-      })) || [];
+      }));
 
       setHistory(formattedHistory);
     } catch (error) {
