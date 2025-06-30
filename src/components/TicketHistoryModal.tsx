@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { X, Clock, User } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -35,25 +34,36 @@ export const TicketHistoryModal: React.FC<TicketHistoryModalProps> = ({
 
   const fetchHistory = async () => {
     try {
-      const tableName = type === 'support' ? 'support_ticket_logs' : 'maintenance_logs';
-      const idField = type === 'support' ? 'ticket_id' : 'maintenance_id';
+      let logs: any[] = [];
       
-      // First, get the logs
-      const { data: logs, error: logsError } = await supabase
-        .from(tableName)
-        .select('*')
-        .eq(idField, ticketId)
-        .order('created_at', { ascending: false });
+      // Fetch logs based on type
+      if (type === 'support') {
+        const { data, error } = await supabase
+          .from('support_ticket_logs')
+          .select('*')
+          .eq('ticket_id', ticketId)
+          .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        logs = data || [];
+      } else {
+        const { data, error } = await supabase
+          .from('maintenance_logs')
+          .select('*')
+          .eq('maintenance_id', ticketId)
+          .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        logs = data || [];
+      }
 
-      if (logsError) throw logsError;
-
-      if (!logs || logs.length === 0) {
+      if (logs.length === 0) {
         setHistory([]);
         setLoading(false);
         return;
       }
 
-      // Then, get user profiles separately
+      // Get user profiles separately
       const userIds = [...new Set(logs.map(log => log.changed_by))];
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
