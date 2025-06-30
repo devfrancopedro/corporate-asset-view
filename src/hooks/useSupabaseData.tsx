@@ -30,14 +30,20 @@ export const useSupabaseData = () => {
     if (!user) return;
     setLoading(true);
     try {
+      console.log('Fetching equipments...');
       const { data, error } = await supabase
         .from('equipments')
         .select('*')
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching equipments:', error);
+        throw error;
+      }
+      console.log('Equipments fetched:', data);
       setEquipments(data || []);
     } catch (error: any) {
+      console.error('Equipment fetch error:', error);
       toast({
         title: "Erro ao carregar equipamentos",
         description: error.message,
@@ -51,13 +57,18 @@ export const useSupabaseData = () => {
   const createEquipment = async (equipment: EquipmentInsert) => {
     if (!user) return;
     try {
+      console.log('Creating equipment:', equipment);
       const { data, error } = await supabase
         .from('equipments')
         .insert([{ ...equipment, created_by: user.id }])
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error creating equipment:', error);
+        throw error;
+      }
+      console.log('Equipment created:', data);
       setEquipments(prev => [data, ...prev]);
       toast({
         title: "Equipamento criado",
@@ -65,6 +76,7 @@ export const useSupabaseData = () => {
       });
       return data;
     } catch (error: any) {
+      console.error('Equipment creation error:', error);
       toast({
         title: "Erro ao criar equipamento",
         description: error.message,
@@ -76,6 +88,7 @@ export const useSupabaseData = () => {
 
   const updateEquipment = async (id: string, updates: Database['public']['Tables']['equipments']['Update']) => {
     try {
+      console.log('Updating equipment:', id, updates);
       const { data, error } = await supabase
         .from('equipments')
         .update(updates)
@@ -83,7 +96,11 @@ export const useSupabaseData = () => {
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error updating equipment:', error);
+        throw error;
+      }
+      console.log('Equipment updated:', data);
       setEquipments(prev => prev.map(eq => eq.id === id ? data : eq));
       toast({
         title: "Equipamento atualizado",
@@ -91,6 +108,7 @@ export const useSupabaseData = () => {
       });
       return data;
     } catch (error: any) {
+      console.error('Equipment update error:', error);
       toast({
         title: "Erro ao atualizar equipamento",
         description: error.message,
@@ -102,18 +120,24 @@ export const useSupabaseData = () => {
 
   const deleteEquipment = async (id: string) => {
     try {
+      console.log('Deleting equipment:', id);
       const { error } = await supabase
         .from('equipments')
         .delete()
         .eq('id', id);
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error deleting equipment:', error);
+        throw error;
+      }
+      console.log('Equipment deleted');
       setEquipments(prev => prev.filter(eq => eq.id !== id));
       toast({
         title: "Equipamento excluído",
         description: "Equipamento removido com sucesso",
       });
     } catch (error: any) {
+      console.error('Equipment deletion error:', error);
       toast({
         title: "Erro ao excluir equipamento",
         description: error.message,
@@ -130,14 +154,20 @@ export const useSupabaseData = () => {
     if (!user) return;
     setLoading(true);
     try {
+      console.log('Fetching support tickets...');
       const { data, error } = await supabase
         .from('support_tickets')
         .select('*')
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching support tickets:', error);
+        throw error;
+      }
+      console.log('Support tickets fetched:', data);
       setSupportTickets(data || []);
     } catch (error: any) {
+      console.error('Support tickets fetch error:', error);
       toast({
         title: "Erro ao carregar chamados",
         description: error.message,
@@ -151,13 +181,18 @@ export const useSupabaseData = () => {
   const createSupportTicket = async (ticket: SupportTicketInsert) => {
     if (!user) return;
     try {
+      console.log('Creating support ticket:', ticket);
       const { data, error } = await supabase
         .from('support_tickets')
         .insert([{ ...ticket, created_by: user.id }])
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error creating support ticket:', error);
+        throw error;
+      }
+      console.log('Support ticket created:', data);
       setSupportTickets(prev => [data, ...prev]);
       toast({
         title: "Chamado criado",
@@ -165,6 +200,7 @@ export const useSupabaseData = () => {
       });
       return data;
     } catch (error: any) {
+      console.error('Support ticket creation error:', error);
       toast({
         title: "Erro ao criar chamado",
         description: error.message,
@@ -176,6 +212,7 @@ export const useSupabaseData = () => {
 
   const updateSupportTicket = async (id: string, updates: Database['public']['Tables']['support_tickets']['Update']) => {
     try {
+      console.log('Updating support ticket:', id, updates);
       const { data, error } = await supabase
         .from('support_tickets')
         .update(updates)
@@ -183,7 +220,11 @@ export const useSupabaseData = () => {
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error updating support ticket:', error);
+        throw error;
+      }
+      console.log('Support ticket updated:', data);
       setSupportTickets(prev => prev.map(ticket => ticket.id === id ? data : ticket));
       toast({
         title: "Chamado atualizado",
@@ -191,6 +232,7 @@ export const useSupabaseData = () => {
       });
       return data;
     } catch (error: any) {
+      console.error('Support ticket update error:', error);
       toast({
         title: "Erro ao atualizar chamado",
         description: error.message,
@@ -207,14 +249,20 @@ export const useSupabaseData = () => {
     if (!user) return;
     setLoading(true);
     try {
+      console.log('Fetching maintenances...');
       const { data, error } = await supabase
         .from('maintenances')
         .select('*')
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching maintenances:', error);
+        throw error;
+      }
+      console.log('Maintenances fetched:', data);
       setMaintenances(data || []);
     } catch (error: any) {
+      console.error('Maintenances fetch error:', error);
       toast({
         title: "Erro ao carregar manutenções",
         description: error.message,
@@ -228,13 +276,18 @@ export const useSupabaseData = () => {
   const createMaintenance = async (maintenance: MaintenanceInsert) => {
     if (!user) return;
     try {
+      console.log('Creating maintenance:', maintenance);
       const { data, error } = await supabase
         .from('maintenances')
         .insert([{ ...maintenance, requested_by: user.id }])
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error creating maintenance:', error);
+        throw error;
+      }
+      console.log('Maintenance created:', data);
       setMaintenances(prev => [data, ...prev]);
       toast({
         title: "Manutenção agendada",
@@ -242,6 +295,7 @@ export const useSupabaseData = () => {
       });
       return data;
     } catch (error: any) {
+      console.error('Maintenance creation error:', error);
       toast({
         title: "Erro ao criar manutenção",
         description: error.message,
@@ -253,6 +307,7 @@ export const useSupabaseData = () => {
 
   const updateMaintenance = async (id: string, updates: Database['public']['Tables']['maintenances']['Update']) => {
     try {
+      console.log('Updating maintenance:', id, updates);
       const { data, error } = await supabase
         .from('maintenances')
         .update(updates)
@@ -260,7 +315,11 @@ export const useSupabaseData = () => {
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error updating maintenance:', error);
+        throw error;
+      }
+      console.log('Maintenance updated:', data);
       setMaintenances(prev => prev.map(maintenance => maintenance.id === id ? data : maintenance));
       toast({
         title: "Manutenção atualizada",
@@ -268,6 +327,7 @@ export const useSupabaseData = () => {
       });
       return data;
     } catch (error: any) {
+      console.error('Maintenance update error:', error);
       toast({
         title: "Erro ao atualizar manutenção",
         description: error.message,

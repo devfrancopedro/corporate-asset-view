@@ -5,21 +5,30 @@ import {
   Home, 
   Monitor, 
   Users, 
-  ArrowRight, 
+  Package, 
   Settings,
   Ticket 
 } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 const menuItems = [
   { icon: Home, label: 'Dashboard', path: '/' },
   { icon: Monitor, label: 'Equipamentos', path: '/equipamentos' },
-  { icon: Users, label: 'Usuários', path: '/usuarios' },
-  { icon: ArrowRight, label: 'Movimentações', path: '/movimentacoes' },
+  { icon: Package, label: 'Estoque', path: '/movimentacoes' },
   { icon: Settings, label: 'Manutenções', path: '/manutencoes' },
   { icon: Ticket, label: 'Suporte de TI', path: '/suporte' },
 ];
 
+const adminOnlyItems = [
+  { icon: Users, label: 'Usuários', path: '/usuarios' },
+];
+
 export const Sidebar: React.FC = () => {
+  const { user } = useAuth();
+
+  // Check if current user is admin
+  const isAdmin = user?.email === 'admin@admin.com';
+
   return (
     <div className="w-64 h-screen bg-primary text-white flex flex-col rounded-r-minimal">
       <div className="p-6 border-b border-primary-foreground/10">
@@ -46,6 +55,25 @@ export const Sidebar: React.FC = () => {
               </NavLink>
             </li>
           ))}
+          
+          {/* Admin-only menu items */}
+          {isAdmin && adminOnlyItems.map((item) => (
+            <li key={item.path}>
+              <NavLink
+                to={item.path}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-3 rounded-minimal transition-colors ${
+                    isActive
+                      ? 'bg-accent text-white'
+                      : 'text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-white'
+                  }`
+                }
+              >
+                <item.icon size={20} />
+                <span>{item.label}</span>
+              </NavLink>
+            </li>
+          ))}
         </ul>
       </nav>
       
@@ -53,6 +81,11 @@ export const Sidebar: React.FC = () => {
         <div className="text-sm text-primary-foreground/60">
           Versão 1.0.0
         </div>
+        {isAdmin && (
+          <div className="text-xs text-accent mt-1">
+            Modo Administrador
+          </div>
+        )}
       </div>
     </div>
   );

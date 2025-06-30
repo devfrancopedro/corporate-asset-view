@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Monitor, HardDrive, Mouse, Keyboard, Plus, Package } from 'lucide-react';
 import { PeripheralForm } from './PeripheralForm';
+import { useToast } from '@/hooks/use-toast';
 
 interface Peripheral {
   id: string;
@@ -22,6 +23,7 @@ const mockPeripherals: Peripheral[] = [
 export const MovementDashboard: React.FC = () => {
   const [peripherals, setPeripherals] = useState<Peripheral[]>(mockPeripherals);
   const [showForm, setShowForm] = useState(false);
+  const { toast } = useToast();
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -58,31 +60,49 @@ export const MovementDashboard: React.FC = () => {
   };
 
   const handleAddPeripheral = (data: any) => {
-    const newPeripheral: Peripheral = {
-      id: Date.now().toString(),
-      ...data,
-    };
-    setPeripherals([...peripherals, newPeripheral]);
+    try {
+      console.log('Adding peripheral to stock:', data);
+      const newPeripheral: Peripheral = {
+        id: Date.now().toString(),
+        ...data,
+      };
+      setPeripherals(prev => [...prev, newPeripheral]);
+      setShowForm(false);
+      
+      toast({
+        title: "Item adicionado ao estoque",
+        description: `${data.name} foi adicionado com sucesso`,
+      });
+      
+      console.log('Peripheral added successfully:', newPeripheral);
+    } catch (error) {
+      console.error('Error adding peripheral:', error);
+      toast({
+        title: "Erro ao adicionar item",
+        description: "Ocorreu um erro ao adicionar o item ao estoque",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Movimentações</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Estoque</h1>
           <p className="text-gray-600 mt-2">Dashboard de equipamentos e periféricos</p>
         </div>
         <button 
           onClick={() => setShowForm(true)}
-          className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
+          className="w-full sm:w-auto bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2 justify-center"
         >
           <Plus size={16} />
-          Adicionar Periférico
+          Adicionar Item
         </button>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <div className="flex items-center gap-2 mb-2">
             <HardDrive className="text-blue-600" size={20} />
@@ -133,23 +153,23 @@ export const MovementDashboard: React.FC = () => {
       </div>
 
       {/* Peripherals List */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Estoque de Periféricos</h2>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Itens em Estoque</h2>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {peripherals.map((peripheral) => (
             <div key={peripheral.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
               <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="p-2 bg-gray-50 rounded-lg flex-shrink-0">
                     {getTypeIcon(peripheral.type)}
                   </div>
-                  <div>
-                    <h3 className="font-medium text-gray-900">{peripheral.name}</h3>
-                    <p className="text-sm text-gray-600">{peripheral.brand}</p>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-medium text-gray-900 truncate">{peripheral.name}</h3>
+                    <p className="text-sm text-gray-600 truncate">{peripheral.brand}</p>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right flex-shrink-0 ml-2">
                   <div className="text-lg font-bold text-gray-900">{peripheral.quantity}</div>
                   <div className="text-xs text-gray-600">unidades</div>
                 </div>
@@ -162,7 +182,7 @@ export const MovementDashboard: React.FC = () => {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Local:</span>
-                  <span className="text-gray-900">{peripheral.location}</span>
+                  <span className="text-gray-900 truncate ml-2">{peripheral.location}</span>
                 </div>
               </div>
             </div>
@@ -172,7 +192,7 @@ export const MovementDashboard: React.FC = () => {
         {peripherals.length === 0 && (
           <div className="text-center py-8 text-gray-500">
             <Package className="mx-auto mb-4 text-gray-400" size={48} />
-            <p>Nenhum periférico cadastrado</p>
+            <p>Nenhum item em estoque</p>
           </div>
         )}
       </div>
