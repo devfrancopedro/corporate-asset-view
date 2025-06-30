@@ -7,13 +7,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { AuthPage } from "@/components/AuthPage";
-import { Layout } from "./components/Layout";
-import { Dashboard } from "./components/Dashboard";
-import { Equipamentos } from "./components/Equipamentos";
-import { MovementDashboard } from "./components/MovementDashboard";
-import { Manutencoes } from "./components/Manutencoes";
-import { SupportTickets } from "./components/SupportTickets";
-import { UserDashboard } from "./components/UserDashboard";
+import { Layout } from "@/components/Layout";
+import { Dashboard } from "@/components/Dashboard";
+import { Equipamentos } from "@/components/Equipamentos";
+import { MovementDashboard } from "@/components/MovementDashboard";
+import { Manutencoes } from "@/components/Manutencoes";
+import { SupportTickets } from "@/components/SupportTickets";
+import { UserDashboard } from "@/components/UserDashboard";
 
 const queryClient = new QueryClient();
 
@@ -70,7 +70,7 @@ const AppContent = () => {
             </Layout>
           } />
         )}
-        <Route path="/movimentacoes" element={
+        <Route path="/estoque" element={
           <Layout>
             <MovementDashboard />
           </Layout>
