@@ -25,7 +25,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       <div className={`fixed left-0 top-0 h-full z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
-        <div className="relative">
+        <div className="relative h-full">
           <Sidebar />
           <button
             onClick={() => setSidebarOpen(false)}
@@ -45,16 +45,16 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       <div className="flex flex-col lg:ml-64">
         {/* Header */}
         <div className="sticky top-0 z-20 bg-white border-b border-gray-200">
-          <div className="flex items-center justify-between px-4 lg:px-6">
+          <div className="flex items-center px-4 lg:px-0">
             {/* Mobile menu button */}
             <button
               onClick={() => setSidebarOpen(true)}
-              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg lg:hidden"
+              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg lg:hidden flex-shrink-0"
             >
               <Menu size={20} />
             </button>
             
-            <div className="flex-1 lg:flex-none">
+            <div className="flex-1 min-w-0">
               <Header />
             </div>
           </div>
@@ -62,7 +62,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         {/* Page content */}
         <main className="flex-1 p-4 sm:p-6">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-7xl mx-auto w-full">
             {children}
           </div>
         </main>

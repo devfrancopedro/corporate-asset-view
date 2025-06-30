@@ -75,6 +75,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       if (error) {
         console.error('Login error:', error.message);
+        // Se erro de usuário não encontrado para admin, criar automaticamente
+        if (error.message.includes('Invalid login credentials') && email === 'admin') {
+          console.log('Admin user not found, creating...');
+          const { error: signUpError } = await supabase.auth.signUp({
+            email: 'admin@admin.com',
+            password,
+            options: {
+              data: {
+                full_name: 'Administrador',
+              },
+              emailRedirectTo: `${window.location.origin}/`,
+            },
+          });
+          
+          if (signUpError) {
+            console.error('Admin signup error:', signUpError.message);
+            return { error: signUpError };
+          }
+          
+          // Tentar fazer login novamente após criar o usuário
+          const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+            email: 'admin@admin.com',
+            password,
+          });
+          
+          if (loginError) {
+            console.error('Admin login after signup error:', loginError.message);
+            return { error: loginError };
+          }
+          
+          console.log('Admin created and logged in successfully:', loginData.user?.email);
+          return { error: null };
+        }
       } else {
         console.log('Login successful:', data.user?.email);
       }
@@ -118,11 +151,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error('Signout error:', error.message);
+        throw error;
       } else {
         console.log('Signout successful');
+        // Force page reload to ensure clean state
+        window.location.href = '/';
       }
     } catch (error) {
       console.error('Unexpected signout error:', error);
+      throw error;
     }
   };
 
