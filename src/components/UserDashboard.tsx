@@ -1,13 +1,7 @@
 
 import React from 'react';
 import { Wrench, Clock, CheckCircle, AlertCircle } from 'lucide-react';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: 'admin' | 'user' | 'technician';
-}
+import { User } from '@supabase/supabase-js';
 
 interface MaintenanceRecord {
   id: string;
@@ -96,10 +90,13 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
   const inProgressCount = mockMaintenances.filter(m => m.status === 'em_andamento').length;
   const completedCount = mockMaintenances.filter(m => m.status === 'concluida').length;
 
+  // Get user display name from user metadata or email
+  const userName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Usuário';
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Bem-vindo, {user.name}</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Bem-vindo, {userName}</h1>
         <p className="text-gray-600 mt-2">Acompanhe suas manutenções e equipamentos</p>
       </div>
 
