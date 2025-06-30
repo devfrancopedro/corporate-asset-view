@@ -55,7 +55,7 @@ const AppContent = () => {
         {isAdmin && (
           <Route path="/usuarios" element={
             <Layout>
-              <UserDashboard />
+              <UserDashboard user={user} />
             </Layout>
           } />
         )}
