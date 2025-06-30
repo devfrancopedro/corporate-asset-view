@@ -22,10 +22,10 @@ const AppContent = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-          <p className="mt-4 text-gray-600">Carregando...</p>
+          <div className="animate-spin rounded-full h-16 w-16 sm:h-32 sm:w-32 border-b-2 border-primary"></div>
+          <p className="mt-4 text-gray-600 text-sm sm:text-base">Carregando...</p>
         </div>
       </div>
     );
@@ -35,8 +35,8 @@ const AppContent = () => {
     return <AuthPage />;
   }
 
-  // Check if current user is admin
-  const isAdmin = user.email === 'admin@admin.com';
+  // Check if current user is admin - accepts both email formats
+  const isAdmin = user.email === 'admin@admin.com' || user.email === 'admin';
 
   return (
     <BrowserRouter>
@@ -51,25 +51,18 @@ const AppContent = () => {
             <Equipamentos />
           </Layout>
         } />
-        {/* Admin-only route */}
-        {isAdmin && (
-          <Route path="/usuarios" element={
-            <Layout>
+        <Route path="/usuarios" element={
+          <Layout>
+            {isAdmin ? (
               <UserDashboard user={user} />
-            </Layout>
-          } />
-        )}
-        {/* Non-admin users trying to access users page */}
-        {!isAdmin && (
-          <Route path="/usuarios" element={
-            <Layout>
-              <div className="text-center py-12">
-                <h1 className="text-2xl font-bold text-red-600">Acesso Negado</h1>
-                <p className="text-gray-600 mt-2">Você não tem permissão para acessar esta página</p>
+            ) : (
+              <div className="text-center py-8 sm:py-12 px-4">
+                <h1 className="text-xl sm:text-2xl font-bold text-red-600">Acesso Negado</h1>
+                <p className="text-gray-600 mt-2 text-sm sm:text-base">Você não tem permissão para acessar esta página</p>
               </div>
-            </Layout>
-          } />
-        )}
+            )}
+          </Layout>
+        } />
         <Route path="/estoque" element={
           <Layout>
             <MovementDashboard />
@@ -87,9 +80,9 @@ const AppContent = () => {
         } />
         <Route path="*" element={
           <Layout>
-            <div className="text-center py-12">
-              <h1 className="text-4xl font-bold text-gray-900">404</h1>
-              <p className="text-gray-600 mt-2">Página não encontrada</p>
+            <div className="text-center py-8 sm:py-12 px-4">
+              <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">404</h1>
+              <p className="text-gray-600 mt-2 text-sm sm:text-base">Página não encontrada</p>
             </div>
           </Layout>
         } />

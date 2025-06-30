@@ -94,80 +94,80 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
   const userName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Usuário';
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Bem-vindo, {userName}</h1>
-        <p className="text-gray-600 mt-2">Acompanhe suas manutenções e equipamentos</p>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="px-4 sm:px-0">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Bem-vindo, {userName}</h1>
+        <p className="text-gray-600 mt-2 text-sm sm:text-base">Acompanhe suas manutenções e equipamentos</p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4 sm:px-0">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Pendentes</p>
-              <p className="text-2xl font-bold text-yellow-600 mt-2">{pendingCount}</p>
+              <p className="text-xl sm:text-2xl font-bold text-yellow-600 mt-2">{pendingCount}</p>
             </div>
-            <div className="p-3 rounded-lg bg-yellow-100">
-              <Clock className="text-yellow-600" size={24} />
+            <div className="p-2 sm:p-3 rounded-lg bg-yellow-100">
+              <Clock className="text-yellow-600" size={20} />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Em Andamento</p>
-              <p className="text-2xl font-bold text-blue-600 mt-2">{inProgressCount}</p>
+              <p className="text-xl sm:text-2xl font-bold text-blue-600 mt-2">{inProgressCount}</p>
             </div>
-            <div className="p-3 rounded-lg bg-blue-100">
-              <Wrench className="text-blue-600" size={24} />
+            <div className="p-2 sm:p-3 rounded-lg bg-blue-100">
+              <Wrench className="text-blue-600" size={20} />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 sm:col-span-2 lg:col-span-1">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Concluídas</p>
-              <p className="text-2xl font-bold text-green-600 mt-2">{completedCount}</p>
+              <p className="text-xl sm:text-2xl font-bold text-green-600 mt-2">{completedCount}</p>
             </div>
-            <div className="p-3 rounded-lg bg-green-100">
-              <CheckCircle className="text-green-600" size={24} />
+            <div className="p-2 sm:p-3 rounded-lg bg-green-100">
+              <CheckCircle className="text-green-600" size={20} />
             </div>
           </div>
         </div>
       </div>
 
       {/* Maintenance History */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Histórico de Manutenções</h2>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mx-4 sm:mx-0">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Histórico de Manutenções</h2>
         
         <div className="space-y-4">
           {mockMaintenances.map((maintenance) => (
-            <div key={maintenance.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
-              <div className="flex items-start justify-between mb-3">
+            <div key={maintenance.id} className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-sm transition-shadow">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gray-100 rounded-lg">
-                    <Wrench className="text-gray-600" size={20} />
+                  <div className="p-2 bg-gray-100 rounded-lg flex-shrink-0">
+                    <Wrench className="text-gray-600" size={16} />
                   </div>
-                  <div>
-                    <h4 className="font-medium text-gray-900">{maintenance.equipmentName}</h4>
-                    <p className="text-sm text-gray-600">Tipo: {getTypeLabel(maintenance.type)}</p>
+                  <div className="min-w-0">
+                    <h4 className="font-medium text-gray-900 text-sm sm:text-base truncate">{maintenance.equipmentName}</h4>
+                    <p className="text-xs sm:text-sm text-gray-600">Tipo: {getTypeLabel(maintenance.type)}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${getStatusColor(maintenance.status)}`}>
+                <div className="flex items-center gap-2 self-start">
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${getStatusColor(maintenance.status)} whitespace-nowrap`}>
                     {getStatusIcon(maintenance.status)}
                     {getStatusLabel(maintenance.status)}
                   </span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-3">
                 <div>
-                  <span className="text-sm text-gray-600">Data de Início:</span>
-                  <p className="text-sm font-medium text-gray-900">
+                  <span className="text-xs sm:text-sm text-gray-600">Data de Início:</span>
+                  <p className="text-xs sm:text-sm font-medium text-gray-900">
                     {new Date(maintenance.startDate).toLocaleDateString('pt-BR', {
                       day: '2-digit',
                       month: '2-digit',
@@ -179,8 +179,8 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
                 </div>
                 {maintenance.endDate && (
                   <div>
-                    <span className="text-sm text-gray-600">Data de Conclusão:</span>
-                    <p className="text-sm font-medium text-gray-900">
+                    <span className="text-xs sm:text-sm text-gray-600">Data de Conclusão:</span>
+                    <p className="text-xs sm:text-sm font-medium text-gray-900">
                       {new Date(maintenance.endDate).toLocaleDateString('pt-BR', {
                         day: '2-digit',
                         month: '2-digit',
@@ -194,22 +194,22 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({ user }) => {
               </div>
 
               <div className="mb-2">
-                <span className="text-sm text-gray-600">Descrição:</span>
-                <p className="text-sm text-gray-900 mt-1">{maintenance.description}</p>
+                <span className="text-xs sm:text-sm text-gray-600">Descrição:</span>
+                <p className="text-xs sm:text-sm text-gray-900 mt-1 break-words">{maintenance.description}</p>
               </div>
 
               <div>
-                <span className="text-sm text-gray-600">Técnico Responsável:</span>
-                <p className="text-sm font-medium text-gray-900">{maintenance.technician}</p>
+                <span className="text-xs sm:text-sm text-gray-600">Técnico Responsável:</span>
+                <p className="text-xs sm:text-sm font-medium text-gray-900">{maintenance.technician}</p>
               </div>
             </div>
           ))}
         </div>
 
         {mockMaintenances.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            <Wrench className="mx-auto mb-4 text-gray-400" size={48} />
-            <p>Nenhuma manutenção registrada.</p>
+          <div className="text-center py-6 sm:py-8 text-gray-500">
+            <Wrench className="mx-auto mb-4 text-gray-400" size={40} />
+            <p className="text-sm sm:text-base">Nenhuma manutenção registrada.</p>
           </div>
         )}
       </div>
