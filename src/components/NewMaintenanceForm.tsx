@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Search, Package, Wrench } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { useEquipments } from '@/hooks/useEquipments';
+import { useMaintenances } from '@/hooks/useMaintenances';
 
 interface StockItem {
   id: string;
@@ -27,7 +27,8 @@ interface NewMaintenanceFormProps {
 }
 
 export const NewMaintenanceForm: React.FC<NewMaintenanceFormProps> = ({ onSubmit }) => {
-  const { equipments, createMaintenance } = useSupabaseData();
+  const { equipments } = useEquipments();
+  const { createMaintenance } = useMaintenances();
   const [selectedEquipment, setSelectedEquipment] = useState<any>(null);
   const [maintenanceType, setMaintenanceType] = useState<'preventiva' | 'corretiva' | 'upgrade'>('corretiva');
   const [title, setTitle] = useState('');

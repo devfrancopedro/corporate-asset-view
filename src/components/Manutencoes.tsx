@@ -1,13 +1,12 @@
-
 import React, { useState } from 'react';
 import { Wrench, Search, Plus, Clock, CheckCircle, AlertCircle, Edit, History } from 'lucide-react';
 import { NewMaintenanceForm } from './NewMaintenanceForm';
 import { EditMaintenanceModal } from './EditMaintenanceModal';
 import { TicketHistoryModal } from './TicketHistoryModal';
-import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { useMaintenances } from '@/hooks/useMaintenances';
 
 export const Manutencoes: React.FC = () => {
-  const { maintenances, loading, fetchMaintenances } = useSupabaseData();
+  const { maintenances, loading, fetchMaintenances } = useMaintenances();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [showForm, setShowForm] = useState(false);

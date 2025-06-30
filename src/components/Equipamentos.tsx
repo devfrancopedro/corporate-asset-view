@@ -1,11 +1,10 @@
-
 import React, { useState } from 'react';
 import { Monitor, Search, Settings, History, FileText, Eye, EyeOff } from 'lucide-react';
 import { EquipmentForm } from './EquipmentForm';
 import { ReportModal } from './ReportModal';
 import { MovementHistoryModal } from './MovementHistoryModal';
 import { EditEquipmentModal } from './EditEquipmentModal';
-import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { useEquipments } from '@/hooks/useEquipments';
 
 interface MovementRecord {
   id: string;
@@ -38,7 +37,7 @@ const mockMovements: { [key: string]: MovementRecord[] } = {
 };
 
 export const Equipamentos: React.FC = () => {
-  const { equipments, loading } = useSupabaseData();
+  const { equipments, loading } = useEquipments();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [showInactive, setShowInactive] = useState(false);

@@ -1,13 +1,12 @@
-
 import React from 'react';
-import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { useSupportTickets } from '@/hooks/useSupportTickets';
 import { SupportTicketForm } from './SupportTicketForm';
 import { SupportTicketStats } from './SupportTicketStats';
 import { SupportTicketChart } from './SupportTicketChart';
 import { SupportTicketList } from './SupportTicketList';
 
 export const SupportTickets: React.FC = () => {
-  const { supportTickets, loading, fetchSupportTickets } = useSupabaseData();
+  const { supportTickets, loading, fetchSupportTickets } = useSupportTickets();
 
   const handleUpdate = () => {
     fetchSupportTickets();

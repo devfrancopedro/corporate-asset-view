@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { X, Save } from 'lucide-react';
-import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { useMaintenances } from '@/hooks/useMaintenances';
 import { useToast } from '@/hooks/use-toast';
-import type { Maintenance } from '@/hooks/useSupabaseData';
+import type { Maintenance } from '@/types/database';
 
 interface EditMaintenanceModalProps {
   maintenance: Maintenance;
@@ -16,7 +15,7 @@ export const EditMaintenanceModal: React.FC<EditMaintenanceModalProps> = ({
   onClose,
   onUpdate
 }) => {
-  const { updateMaintenance } = useSupabaseData();
+  const { updateMaintenance } = useMaintenances();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 

@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { X, Save } from 'lucide-react';
-import { useSupabaseData } from '@/hooks/useSupabaseData';
+import { useSupportTickets } from '@/hooks/useSupportTickets';
 import { useToast } from '@/hooks/use-toast';
-import type { SupportTicket } from '@/hooks/useSupabaseData';
+import type { SupportTicket } from '@/types/database';
 
 interface EditSupportTicketModalProps {
   ticket: SupportTicket;
@@ -16,7 +15,7 @@ export const EditSupportTicketModal: React.FC<EditSupportTicketModalProps> = ({
   onClose,
   onUpdate
 }) => {
-  const { updateSupportTicket } = useSupabaseData();
+  const { updateSupportTicket } = useSupportTickets();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
