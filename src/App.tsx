@@ -59,7 +59,7 @@ const AppContent = () => {
             </div>
           </Layout>
         } />
-        <Route path="/movimentacoes" element={
+        <Route path="/estoque" element={
           <Layout>
             <MovementDashboard />
           </Layout>

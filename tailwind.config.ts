@@ -26,32 +26,32 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: '#808080',
-					foreground: '#FFFFFF'
+					DEFAULT: '#1e40af',
+					foreground: '#ffffff'
 				},
 				secondary: {
-					DEFAULT: '#a0a0a0',
-					foreground: '#000000'
+					DEFAULT: '#f1f5f9',
+					foreground: '#0f172a'
 				},
 				accent: {
-					DEFAULT: '#a0a0a0',
-					foreground: '#000000'
+					DEFAULT: '#3b82f6',
+					foreground: '#ffffff'
 				},
 				destructive: {
-					DEFAULT: '#808080',
-					foreground: '#FFFFFF'
+					DEFAULT: '#dc2626',
+					foreground: '#ffffff'
 				},
 				muted: {
-					DEFAULT: '#a0a0a0',
-					foreground: '#000000'
+					DEFAULT: '#f8fafc',
+					foreground: '#64748b'
 				},
 				card: {
-					DEFAULT: '#FFFFFF',
-					foreground: '#000000'
+					DEFAULT: '#ffffff',
+					foreground: '#0f172a'
 				},
 				popover: {
-					DEFAULT: '#FFFFFF',
-					foreground: '#000000'
+					DEFAULT: '#ffffff',
+					foreground: '#0f172a'
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
@@ -68,7 +68,7 @@ export default {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)',
-				minimal: '1rem'
+				minimal: '0.5rem'
 			},
 			keyframes: {
 				'accordion-down': {

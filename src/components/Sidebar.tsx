@@ -30,7 +30,7 @@ export const Sidebar: React.FC = () => {
   const isAdmin = user?.email === 'admin@admin.com' || user?.email === 'admin';
 
   return (
-    <div className="w-64 h-screen bg-primary text-white flex flex-col rounded-r-minimal overflow-y-auto">
+    <div className="w-64 h-screen bg-primary text-white flex flex-col rounded-r-minimal overflow-y-auto shadow-lg">
       <div className="p-4 sm:p-6 border-b border-primary-foreground/10 flex-shrink-0">
         <h1 className="text-lg sm:text-xl font-bold leading-tight">Controle de Ativos</h1>
         <p className="text-xs sm:text-sm text-primary-foreground/70 mt-1">Sistema de TI</p>
@@ -45,7 +45,7 @@ export const Sidebar: React.FC = () => {
                 className={({ isActive }) =>
                   `flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-minimal transition-colors text-sm sm:text-base ${
                     isActive
-                      ? 'bg-accent text-white'
+                      ? 'bg-accent text-white shadow-sm'
                       : 'text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-white'
                   }`
                 }
@@ -64,7 +64,7 @@ export const Sidebar: React.FC = () => {
                 className={({ isActive }) =>
                   `flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-minimal transition-colors text-sm sm:text-base ${
                     isActive
-                      ? 'bg-accent text-white'
+                      ? 'bg-accent text-white shadow-sm'
                       : 'text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-white'
                   }`
                 }
@@ -82,7 +82,7 @@ export const Sidebar: React.FC = () => {
           Versão 1.0.0
         </div>
         {isAdmin && (
-          <div className="text-xs text-accent mt-1">
+          <div className="text-xs text-accent-foreground mt-1 bg-accent px-2 py-1 rounded text-center">
             Modo Administrador
           </div>
         )}
